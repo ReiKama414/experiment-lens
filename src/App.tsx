@@ -239,7 +239,7 @@ export function App() {
   const primaryComparison = comparisons[0];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-150">
       {/* Top Header */}
       <Header
         onSelectPreset={handleSelectPreset}
@@ -254,20 +254,20 @@ export function App() {
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5">
         {/* Experiment Title & Meta Banner */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
           <div className="flex-1 space-y-1.5 min-w-0">
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-wrap items-center gap-2">
               <input
                 type="text"
                 value={settings.experimentName}
                 onChange={(e) => handleUpdateSettings({ experimentName: e.target.value })}
-                className="text-base font-bold text-white bg-transparent border-b border-transparent hover:border-slate-700 focus:border-blue-500 focus:outline-none transition w-full sm:w-auto"
+                className="text-base font-bold text-slate-900 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-blue-500 focus:outline-none transition w-full sm:w-auto"
                 placeholder="輸入測試實驗名稱..."
               />
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as ExperimentStatus)}
-                className="bg-slate-800 border border-slate-700 text-[11px] rounded px-2 py-0.5 font-mono text-slate-300 focus:outline-none"
+                className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-[11px] rounded px-2 py-0.5 font-mono text-slate-800 dark:text-slate-300 focus:outline-none"
               >
                 <option value="draft">DRAFT (草稿)</option>
                 <option value="running">RUNNING (進行中)</option>
@@ -275,27 +275,27 @@ export function App() {
                 <option value="archived">ARCHIVED (已封存)</option>
               </select>
             </div>
-            <div className="flex items-center space-x-2 text-xs text-slate-400">
-              <Tag className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+            <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400">
+              <Tag className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
               <span>目標指標:</span>
               <input
                 type="text"
                 value={settings.metricName}
                 onChange={(e) => handleUpdateSettings({ metricName: e.target.value })}
-                className="font-medium text-slate-200 bg-transparent border-b border-transparent hover:border-slate-700 focus:border-blue-500 focus:outline-none transition text-xs"
+                className="font-medium text-slate-800 dark:text-slate-200 bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-blue-500 focus:outline-none transition text-xs"
                 placeholder="例如：付款轉換率"
               />
             </div>
           </div>
 
           {/* Workbench Tabs */}
-          <div className="flex bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs font-semibold self-start sm:self-auto shrink-0">
+          <div className="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold overflow-x-auto max-w-full shrink-0">
             <button
               onClick={() => setActiveTab('analysis')}
-              className={`px-3 py-1.5 rounded-md transition flex items-center space-x-1.5 ${
+              className={`px-3 py-1.5 rounded-md transition flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
                 activeTab === 'analysis'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               <BarChart3 className="w-3.5 h-3.5" />
@@ -304,10 +304,10 @@ export function App() {
 
             <button
               onClick={() => setActiveTab('power')}
-              className={`px-3 py-1.5 rounded-md transition flex items-center space-x-1.5 ${
+              className={`px-3 py-1.5 rounded-md transition flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
                 activeTab === 'power'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               <Calculator className="w-3.5 h-3.5" />
@@ -316,10 +316,10 @@ export function App() {
 
             <button
               onClick={() => setActiveTab('business')}
-              className={`px-3 py-1.5 rounded-md transition flex items-center space-x-1.5 ${
+              className={`px-3 py-1.5 rounded-md transition flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
                 activeTab === 'business'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               <ShieldAlert className="w-3.5 h-3.5" />
@@ -379,22 +379,22 @@ export function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 border-t border-slate-800 text-xs text-slate-500 py-4 mt-8">
+      <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 py-4 mt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <div className="space-y-0.5">
-            <span className="text-slate-300 font-semibold">
+            <span className="text-slate-800 dark:text-slate-300 font-semibold">
               Experiment Lens · 專業級 A/B 測試分析工作台
             </span>
             <p>
               雙樣本比例 Z 檢定 · Newcombe Hybrid Score · Wilson 區間 · Pearson χ² SRM · ECharts 視覺化 · IndexedDB 本機儲存
             </p>
           </div>
-          <div className="flex items-center space-x-3 text-slate-400 text-[11px]">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 text-slate-500 dark:text-slate-400 text-[11px]">
             <button
               onClick={() => setIsVerificationModalOpen(true)}
-              className="hover:text-blue-400 transition underline underline-offset-2 flex items-center gap-1"
+              className="hover:text-blue-600 dark:hover:text-blue-400 transition underline underline-offset-2 flex items-center gap-1"
             >
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
               <span>通過 9 項統計數學基準測試</span>
             </button>
             <span>·</span>

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 import type { Variant } from '../../types/experiment';
 import { normalPDF } from '../../utils/stats';
+import { useTheme } from '../../context/ThemeContext';
 
 interface DistributionEChartProps {
   variants: Variant[];
@@ -10,14 +11,19 @@ interface DistributionEChartProps {
 export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     if (!chartRef.current) return;
 
-    if (!chartInstance.current) {
-      chartInstance.current = echarts.init(chartRef.current, 'dark');
+    // Dispose old instance on theme change or init
+    if (chartInstance.current) {
+      chartInstance.current.dispose();
+      chartInstance.current = null;
     }
 
+    const isDark = resolvedTheme === 'dark';
+    chartInstance.current = echarts.init(chartRef.current, isDark ? 'dark' : undefined);
     const chart = chartInstance.current;
 
     const validVariants = variants.filter((v) => v.visitors > 0);
@@ -49,7 +55,9 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
       xData.push(Number((minX + i * stepSize).toFixed(5)));
     }
 
-    const colors = ['#f59e0b', '#38bdf8', '#34d399', '#a78bfa', '#fb7185'];
+    const colors = isDark
+      ? ['#f59e0b', '#38bdf8', '#34d399', '#a78bfa', '#fb7185']
+      : ['#d97706', '#0284c7', '#059669', '#7c3aed', '#e11d48'];
 
     const series: echarts.SeriesOption[] = stats.map((s, idx) => {
       const yValues = xData.map((x) => {
@@ -58,7 +66,7 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
         return Number((normalPDF(z) / s.se).toFixed(2));
       });
 
-      const color = s.isControl ? '#f59e0b' : colors[(idx) % colors.length];
+      const color = s.isControl ? colors[0] : colors[idx % colors.length];
 
       return {
         name: s.isControl ? `${s.name} (對照組)` : s.name,
@@ -72,7 +80,7 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
         },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: `${color}40` },
+            { offset: 0, color: `${color}35` },
             { offset: 1, color: `${color}00` },
           ]),
         },
@@ -84,14 +92,15 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
       animation: false,
       tooltip: {
         trigger: 'axis',
-        backgroundColor: '#0f172a',
-        borderColor: '#334155',
-        textStyle: { color: '#e2e8f0', fontSize: 12 },
+        backgroundColor: isDark ? '#0f172a' : '#ffffff',
+        borderColor: isDark ? '#334155' : '#e2e8f0',
+        textStyle: { color: isDark ? '#e2e8f0' : '#0f172a', fontSize: 12 },
         formatter: (params: any) => {
           if (!Array.isArray(params) || params.length === 0) return '';
           const xIdx = params[0].dataIndex;
           const rateVal = (xData[xIdx] * 100).toFixed(2);
-          let str = `<div style="font-weight:600;margin-bottom:4px;border-bottom:1px solid #334155;padding-bottom:3px;">轉換率: ${rateVal}%</div>`;
+          const borderC = isDark ? '#334155' : '#e2e8f0';
+          let str = `<div style="font-weight:600;margin-bottom:4px;border-bottom:1px solid ${borderC};padding-bottom:3px;">轉換率: ${rateVal}%</div>`;
           params.forEach((item: any) => {
             str += `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0;">
               <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${item.color};margin-right:6px;"></span>${item.seriesName}</span>
@@ -104,7 +113,7 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
       legend: {
         top: 4,
         right: 12,
-        textStyle: { color: '#94a3b8', fontSize: 11 },
+        textStyle: { color: isDark ? '#94a3b8' : '#64748b', fontSize: 11 },
         icon: 'circle',
       },
       grid: {
@@ -117,9 +126,9 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
       xAxis: {
         type: 'category',
         data: xData.map((v) => `${(v * 100).toFixed(2)}%`),
-        axisLine: { lineStyle: { color: '#334155' } },
+        axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } },
         axisLabel: {
-          color: '#64748b',
+          color: isDark ? '#64748b' : '#64748b',
           fontSize: 10,
           interval: Math.floor(steps / 6),
         },
@@ -134,10 +143,10 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
           saveAsImage: {
             title: '儲存圖表 PNG',
             pixelRatio: 2,
-            backgroundColor: '#0f172a',
+            backgroundColor: isDark ? '#0f172a' : '#ffffff',
           },
         },
-        iconStyle: { borderColor: '#64748b' },
+        iconStyle: { borderColor: isDark ? '#64748b' : '#94a3b8' },
         right: '1%',
         top: '2%',
       },
@@ -154,7 +163,7 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
     return () => {
       resizeObserver.disconnect();
     };
-  }, [variants]);
+  }, [variants, resolvedTheme]);
 
   useEffect(() => {
     return () => {
@@ -166,8 +175,8 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
   }, []);
 
   return (
-    <div className="w-full h-72">
-      <div ref={chartRef} className="w-full h-full" />
+    <div className="w-full h-72 min-w-0">
+      <div ref={chartRef} className="w-full h-full min-w-0" />
     </div>
   );
 };

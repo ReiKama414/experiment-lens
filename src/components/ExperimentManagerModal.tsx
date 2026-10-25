@@ -168,22 +168,22 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-700 rounded-xl max-w-4xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-4xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-950">
+        <div className="px-4 sm:px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950">
           <div className="flex items-center space-x-2.5">
-            <div className="p-1.5 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20">
+            <div className="p-1.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg border border-blue-200 dark:border-blue-500/20 shrink-0">
               <Database className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <span>本機實驗庫 (IndexedDB 儲存庫)</span>
-                <span className="text-[11px] bg-slate-800 text-slate-300 font-mono px-2 py-0.5 rounded border border-slate-700">
+                <span className="text-[11px] bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono px-2 py-0.5 rounded border border-slate-300 dark:border-slate-700">
                   {experiments.length} 個實驗
                 </span>
               </h3>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 所有實驗數據均安全持久化保存在瀏覽器 IndexedDB 中，離線可用且完全保障隱私。
               </p>
             </div>
@@ -191,15 +191,15 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
+            className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Action Controls Ribbon */}
-        <div className="px-5 py-3 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center space-x-2 flex-1 max-w-md">
+        <div className="px-4 sm:px-5 py-3 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center space-x-2 flex-1 max-w-full sm:max-w-md">
             <div className="relative w-full">
               <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-400" />
               <input
@@ -207,14 +207,14 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
                 placeholder="搜尋實驗名稱、指標或標籤..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-md pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md pl-8 pr-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
               />
             </div>
 
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-slate-800 border border-slate-700 rounded-md px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none"
+              className="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none shrink-0"
             >
               <option value="all">所有狀態</option>
               <option value="draft">草稿 (Draft)</option>
@@ -224,7 +224,7 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
             </select>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => {
                 onNewExperiment();
@@ -236,8 +236,8 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
               <span>建立新實驗</span>
             </button>
 
-            <label className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-md font-medium transition flex items-center space-x-1 cursor-pointer">
-              <Upload className="w-3.5 h-3.5 text-slate-400" />
+            <label className="px-2.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded-md font-medium transition flex items-center space-x-1 cursor-pointer">
+              <Upload className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
               <span>匯入 (CSV/JSON)</span>
               <input
                 type="file"
@@ -249,10 +249,10 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
 
             <button
               onClick={handleExportAll}
-              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-md font-medium transition flex items-center space-x-1"
+              className="px-2.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded-md font-medium transition flex items-center space-x-1"
               title="備份所有實驗為 JSON"
             >
-              <Download className="w-3.5 h-3.5 text-slate-400" />
+              <Download className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
               <span>全庫備份</span>
             </button>
           </div>
@@ -261,10 +261,10 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
         {/* Import status alert */}
         {importStatus && (
           <div
-            className={`px-5 py-2 text-xs flex items-center space-x-2 ${
+            className={`px-4 sm:px-5 py-2 text-xs flex items-center space-x-2 ${
               importStatus.isError
-                ? 'bg-rose-950/60 text-rose-300 border-b border-rose-800'
-                : 'bg-emerald-950/60 text-emerald-300 border-b border-emerald-800'
+                ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-b border-rose-200 dark:border-rose-800'
+                : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-b border-emerald-200 dark:border-emerald-800'
             }`}
           >
             {importStatus.isError ? (
@@ -277,10 +277,10 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
         )}
 
         {/* Experiment Records List */}
-        <div className="p-5 overflow-y-auto space-y-2 flex-1">
+        <div className="p-4 sm:p-5 overflow-y-auto space-y-2 flex-1">
           {experiments.length === 0 ? (
-            <div className="text-center py-12 text-slate-500 text-xs space-y-2">
-              <FolderOpen className="w-8 h-8 mx-auto text-slate-600" />
+            <div className="text-center py-12 text-slate-400 dark:text-slate-500 text-xs space-y-2">
+              <FolderOpen className="w-8 h-8 mx-auto text-slate-400 dark:text-slate-600" />
               <p>無符合條件的實驗紀錄。</p>
             </div>
           ) : (
@@ -296,25 +296,25 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
 
               const statusColor =
                 exp.status === 'concluded'
-                  ? 'bg-emerald-950 text-emerald-400 border-emerald-800'
+                  ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-400 border-emerald-300 dark:border-emerald-800'
                   : exp.status === 'running'
-                  ? 'bg-blue-950 text-blue-400 border-blue-800'
+                  ? 'bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-400 border-blue-300 dark:border-blue-800'
                   : exp.status === 'archived'
-                  ? 'bg-slate-800 text-slate-400 border-slate-700'
-                  : 'bg-amber-950 text-amber-400 border-amber-800';
+                  ? 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-400 border-slate-300 dark:border-slate-700'
+                  : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-400 border-amber-300 dark:border-amber-800';
 
               return (
                 <div
                   key={exp.id}
                   className={`p-3 rounded-lg border flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition ${
                     isActive
-                      ? 'bg-slate-800/80 border-blue-500/50'
-                      : 'bg-slate-950/60 border-slate-800 hover:bg-slate-800/40'
+                      ? 'bg-blue-50/60 dark:bg-slate-800/80 border-blue-400 dark:border-blue-500/50'
+                      : 'bg-slate-50 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800/40'
                   }`}
                 >
                   <div className="space-y-1 flex-1 min-w-0">
-                    <div className="flex items-center space-x-2">
-                      <span className="font-semibold text-white text-xs truncate">{exp.name}</span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-semibold text-slate-900 dark:text-white text-xs truncate max-w-xs">{exp.name}</span>
                       <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono border ${statusColor}`}>
                         {exp.status.toUpperCase()}
                       </span>
@@ -325,14 +325,14 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
                       )}
                     </div>
 
-                    <div className="text-[11px] text-slate-400 flex flex-wrap items-center gap-x-3 gap-y-1">
-                      <span>指標: <strong className="text-slate-300">{exp.metricName}</strong></span>
-                      <span>組別: <strong className="text-slate-300">{exp.variants.length} 組</strong></span>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <span>指標: <strong className="text-slate-800 dark:text-slate-300">{exp.metricName}</strong></span>
+                      <span>組別: <strong className="text-slate-800 dark:text-slate-300">{exp.variants.length} 組</strong></span>
                       <span>最後更新: <span className="font-mono">{dateStr}</span></span>
                       {exp.tags && exp.tags.length > 0 && (
                         <div className="flex items-center gap-1">
                           {exp.tags.map((t) => (
-                            <span key={t} className="bg-slate-800 text-slate-400 px-1.5 rounded text-[10px]">
+                            <span key={t} className="bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-1.5 rounded text-[10px]">
                               #{t}
                             </span>
                           ))}
@@ -354,7 +354,7 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
 
                     <button
                       onClick={() => handleDuplicate(exp.id)}
-                      className="p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition"
+                      className="p-1.5 rounded bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition"
                       title="建立副本"
                     >
                       <Copy className="w-3.5 h-3.5" />
@@ -362,7 +362,7 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
 
                     <button
                       onClick={() => handleDelete(exp.id, exp.name)}
-                      className="p-1.5 rounded bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-400 transition"
+                      className="p-1.5 rounded bg-slate-200 dark:bg-slate-800 hover:bg-rose-100 dark:hover:bg-rose-950 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition"
                       title="刪除"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -375,11 +375,11 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-2.5 bg-slate-950 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+        <div className="px-4 sm:px-5 py-2.5 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
           <span>支援將任何現有 A/B 數據匯入或將歷史實驗完整備份為標準 JSON / CSV。</span>
           <button
             onClick={onClose}
-            className="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 transition"
+            className="px-3 py-1 rounded bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition"
           >
             關閉
           </button>

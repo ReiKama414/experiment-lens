@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
+import { useTheme } from '../../context/ThemeContext';
 
 interface PowerCurveEChartProps {
   powerCurve: Array<{
@@ -16,15 +17,20 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     if (!chartRef.current) return;
 
-    if (!chartInstance.current) {
-      chartInstance.current = echarts.init(chartRef.current, 'dark');
+    if (chartInstance.current) {
+      chartInstance.current.dispose();
+      chartInstance.current = null;
     }
 
+    const isDark = resolvedTheme === 'dark';
+    chartInstance.current = echarts.init(chartRef.current, isDark ? 'dark' : undefined);
     const chart = chartInstance.current;
+
     if (powerCurve.length === 0) {
       chart.clear();
       return;
@@ -37,14 +43,14 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
       animation: false,
       tooltip: {
         trigger: 'axis',
-        backgroundColor: '#0f172a',
-        borderColor: '#334155',
-        textStyle: { color: '#e2e8f0', fontSize: 12 },
+        backgroundColor: isDark ? '#0f172a' : '#ffffff',
+        borderColor: isDark ? '#334155' : '#e2e8f0',
+        textStyle: { color: isDark ? '#e2e8f0' : '#0f172a', fontSize: 12 },
         formatter: (params: any) => {
           if (!Array.isArray(params) || params.length === 0) return '';
           const [n, p] = params[0].data;
-          return `<div style="font-weight:600;margin-bottom:3px;">每組樣本數: <span style="font-family:monospace;color:#38bdf8;">${Number(n).toLocaleString()}</span></div>
-            <div>檢定力 (Power): <span style="font-family:monospace;font-weight:bold;color:#a78bfa;">${p}%</span></div>`;
+          return `<div style="font-weight:600;margin-bottom:3px;">每組樣本數: <span style="font-family:monospace;color:${isDark ? '#38bdf8' : '#0284c7'};">${Number(n).toLocaleString()}</span></div>
+            <div>檢定力 (Power): <span style="font-family:monospace;font-weight:bold;color:${isDark ? '#a78bfa' : '#6366f1'};">${p}%</span></div>`;
         },
       },
       grid: {
@@ -56,8 +62,8 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
       },
       xAxis: {
         type: 'value',
-        axisLine: { lineStyle: { color: '#334155' } },
-        splitLine: { lineStyle: { color: '#1e293b' } },
+        axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } },
+        splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9' } },
         axisLabel: {
           color: '#64748b',
           fontSize: 10,
@@ -68,8 +74,8 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
         type: 'value',
         min: 0,
         max: 100,
-        axisLine: { lineStyle: { color: '#334155' } },
-        splitLine: { lineStyle: { color: '#1e293b' } },
+        axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } },
+        splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9' } },
         axisLabel: {
           color: '#64748b',
           fontSize: 10,
@@ -81,10 +87,10 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
           saveAsImage: {
             title: '儲存檢定力曲線 PNG',
             pixelRatio: 2,
-            backgroundColor: '#0f172a',
+            backgroundColor: isDark ? '#0f172a' : '#ffffff',
           },
         },
-        iconStyle: { borderColor: '#64748b' },
+        iconStyle: { borderColor: isDark ? '#64748b' : '#94a3b8' },
         right: '1%',
         top: '2%',
       },
@@ -114,10 +120,10 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
               },
               {
                 xAxis: recommendedN,
-                lineStyle: { color: '#818cf8', type: 'solid', width: 2 },
+                lineStyle: { color: isDark ? '#818cf8' : '#4f46e5', type: 'solid', width: 2 },
                 label: {
                   formatter: `規劃點: ${recommendedN.toLocaleString()}`,
-                  color: '#818cf8',
+                  color: isDark ? '#818cf8' : '#4f46e5',
                   fontSize: 10,
                   position: 'insideEndTop',
                 },
@@ -138,7 +144,7 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
     return () => {
       resizeObserver.disconnect();
     };
-  }, [powerCurve, recommendedN]);
+  }, [powerCurve, recommendedN, resolvedTheme]);
 
   useEffect(() => {
     return () => {
@@ -150,8 +156,8 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
   }, []);
 
   return (
-    <div className="w-full h-64">
-      <div ref={chartRef} className="w-full h-full" />
+    <div className="w-full h-64 min-w-0">
+      <div ref={chartRef} className="w-full h-full min-w-0" />
     </div>
   );
 };

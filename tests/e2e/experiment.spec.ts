@@ -28,6 +28,10 @@ test.describe('Experiment Lens Studio E2E Tests', () => {
   });
 
   test('updates conversion numbers and calculates lift in real-time', async ({ page }) => {
+    // Open preset dropdown and reset to standard e-commerce preset to ensure clean slate
+    await page.getByRole('button', { name: '案例範本' }).click();
+    await page.getByRole('button', { name: '電商結帳頁簡化流程 (顯著獲勝)' }).click();
+
     // Find treatment conversions input
     const inputs = page.locator('input[placeholder="500"]');
     const treatmentConversions = inputs.nth(1);
@@ -36,8 +40,8 @@ test.describe('Experiment Lens Studio E2E Tests', () => {
     await treatmentConversions.fill('1500');
 
     // Verify relative lift is calculated
-    await expect(page.locator('text=相對提升 (Relative Lift)').first()).toBeVisible();
-    await expect(page.locator('text=絕對提升 (Absolute Lift)').first()).toBeVisible();
+    await expect(page.locator('text=相對提升').first()).toBeVisible();
+    await expect(page.locator('text=絕對提升').first()).toBeVisible();
   });
 
   test('navigates across tabs: Analysis, Power, and Business Value', async ({ page }) => {

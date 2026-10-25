@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 import type { ComparisonResult } from '../../types/experiment';
+import { useTheme } from '../../context/ThemeContext';
 
 interface ConfidenceIntervalEChartProps {
   comparisons: ComparisonResult[];
@@ -11,15 +12,20 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     if (!chartRef.current) return;
 
-    if (!chartInstance.current) {
-      chartInstance.current = echarts.init(chartRef.current, 'dark');
+    if (chartInstance.current) {
+      chartInstance.current.dispose();
+      chartInstance.current = null;
     }
 
+    const isDark = resolvedTheme === 'dark';
+    chartInstance.current = echarts.init(chartRef.current, isDark ? 'dark' : undefined);
     const chart = chartInstance.current;
+
     if (comparisons.length === 0) {
       chart.clear();
       return;
@@ -27,7 +33,6 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
 
     const yCategories = comparisons.map((c) => c.variantName).reverse();
 
-    // Data points: [center, yIndex, lower, upper]
     const customData = comparisons
       .map((c, idx) => {
         const yIdx = comparisons.length - 1 - idx;
@@ -47,9 +52,11 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
 
       const strokeColor = isSignificant
         ? isPositive
-          ? '#10b981' // emerald
-          : '#f43f5e' // rose
-        : '#94a3b8'; // slate
+          ? '#10b981'
+          : '#f43f5e'
+        : isDark
+        ? '#94a3b8'
+        : '#64748b';
 
       const style = {
         stroke: strokeColor,
@@ -59,7 +66,6 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
       return {
         type: 'group',
         children: [
-          // Horizontal error bar line
           {
             type: 'line',
             shape: {
@@ -70,7 +76,6 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
             },
             style,
           },
-          // Lower cap line
           {
             type: 'line',
             shape: {
@@ -81,7 +86,6 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
             },
             style,
           },
-          // Upper cap line
           {
             type: 'line',
             shape: {
@@ -92,7 +96,6 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
             },
             style,
           },
-          // Center point dot
           {
             type: 'circle',
             shape: {
@@ -101,7 +104,7 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
               r: 4.5,
             },
             style: {
-              fill: '#ffffff',
+              fill: isDark ? '#ffffff' : '#0f172a',
               stroke: strokeColor,
               lineWidth: 2,
             },
@@ -123,9 +126,9 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
       animation: false,
       tooltip: {
         trigger: 'item',
-        backgroundColor: '#0f172a',
-        borderColor: '#334155',
-        textStyle: { color: '#e2e8f0', fontSize: 12 },
+        backgroundColor: isDark ? '#0f172a' : '#ffffff',
+        borderColor: isDark ? '#334155' : '#e2e8f0',
+        textStyle: { color: isDark ? '#e2e8f0' : '#0f172a', fontSize: 12 },
         formatter: (params: any) => {
           const val = params.value;
           const center = Number(val[0]).toFixed(2);
@@ -133,11 +136,12 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
           const upper = Number(val[3]).toFixed(2);
           const variantName = val[4];
           const isSig = val[5];
+          const borderC = isDark ? '#334155' : '#e2e8f0';
 
-          return `<div style="font-weight:600;margin-bottom:4px;border-bottom:1px solid #334155;padding-bottom:3px;">${variantName}</div>
-            <div style="margin:2px 0;">絕對提升: <span style="font-family:monospace;font-weight:bold;color:#38bdf8;">${center > '0' ? '+' : ''}${center} pp</span></div>
+          return `<div style="font-weight:600;margin-bottom:4px;border-bottom:1px solid ${borderC};padding-bottom:3px;">${variantName}</div>
+            <div style="margin:2px 0;">絕對提升: <span style="font-family:monospace;font-weight:bold;color:${isDark ? '#38bdf8' : '#0284c7'};">${center > '0' ? '+' : ''}${center} pp</span></div>
             <div style="margin:2px 0;">95% Newcombe 信賴區間: <span style="font-family:monospace;">[${lower}%, ${upper}%]</span></div>
-            <div style="margin-top:4px;font-size:11px;color:${isSig ? '#34d399' : '#94a3b8'};">
+            <div style="margin-top:4px;font-size:11px;color:${isSig ? '#10b981' : '#94a3b8'};">
               ${isSig ? '● 統計顯著（未跨越 0 基準線）' : '○ 未達顯著（信賴區間包含 0）'}
             </div>`;
         },
@@ -153,10 +157,10 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
         type: 'value',
         min: Number((-maxAbs).toFixed(2)),
         max: Number(maxAbs.toFixed(2)),
-        axisLine: { lineStyle: { color: '#334155' } },
-        splitLine: { lineStyle: { color: '#1e293b' } },
+        axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } },
+        splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9' } },
         axisLabel: {
-          color: '#64748b',
+          color: isDark ? '#64748b' : '#64748b',
           fontSize: 10,
           formatter: (v: number) => `${v.toFixed(1)}%`,
         },
@@ -164,8 +168,8 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
       yAxis: {
         type: 'category',
         data: yCategories,
-        axisLine: { lineStyle: { color: '#334155' } },
-        axisLabel: { color: '#94a3b8', fontSize: 11 },
+        axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } },
+        axisLabel: { color: isDark ? '#94a3b8' : '#334155', fontSize: 11 },
         axisTick: { show: false },
       },
       series: [
@@ -182,11 +186,11 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
             silent: true,
             symbol: 'none',
             lineStyle: {
-              color: '#64748b',
+              color: isDark ? '#64748b' : '#94a3b8',
               type: 'dashed',
               width: 1.5,
             },
-            data: [{ xAxis: 0, label: { formatter: '0 基準線', color: '#64748b', fontSize: 10 } }],
+            data: [{ xAxis: 0, label: { formatter: '0 基準線', color: isDark ? '#64748b' : '#64748b', fontSize: 10 } }],
           },
         },
       ],
@@ -202,7 +206,7 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
     return () => {
       resizeObserver.disconnect();
     };
-  }, [comparisons]);
+  }, [comparisons, resolvedTheme]);
 
   useEffect(() => {
     return () => {
@@ -214,8 +218,8 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
   }, []);
 
   return (
-    <div className="w-full h-48">
-      <div ref={chartRef} className="w-full h-full" />
+    <div className="w-full h-48 min-w-0">
+      <div ref={chartRef} className="w-full h-full min-w-0" />
     </div>
   );
 };
