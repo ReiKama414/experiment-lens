@@ -9,14 +9,18 @@
 [![Vite](https://img.shields.io/badge/Vite-6-646cff?logo=vite)](https://vitejs.dev/)
 [![Apache ECharts](https://img.shields.io/badge/Charts-Apache%20ECharts-e43961?logo=apacheecharts)](https://echarts.apache.org/)
 [![IndexedDB](https://img.shields.io/badge/Storage-IndexedDB%20(idb)-success)](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
-[![Tests Passing](https://img.shields.io/badge/Tests-16%20Unit%20%7C%207%20E2E%20Pass-emerald)](https://vitest.dev/)
+[![Tests Passing](https://img.shields.io/badge/Tests-16%20Unit%20%7C%2023%20E2E%20Pass-emerald)](https://vitest.dev/)
+[![RWD Viewports](https://img.shields.io/badge/RWD-9%20Viewports%20Verified-blue)](https://playwright.dev/)
+[![Dual Theme](https://img.shields.io/badge/Theme-System%20%7C%20Light%20%7C%20Dark-black)](https://tailwindcss.com/)
 
 ---
 
 ## 🛠 技術棧與架構原則 (Tech Stack & Architecture)
 
 - **前端核心**：React 19 + TypeScript + Vite + Tailwind CSS。
-- **圖表引擎**：**Apache ECharts**（支援高清晰度 Canvas / SVG 渲染、縮放、自訂標記線與即時 PNG 下載）。
+- **雙主題系統 (Dual Themes)**：完整支援 System（系統跟隨）、Light Mode（專業白底灰階高對比）與 Dark Mode（深灰沈浸工作台），防閃爍腳本、即時回應 `prefers-color-scheme` 並保存至 `localStorage`。
+- **全響應式版型 (RWD 320px ~ 1920px)**：經 Playwright 實際自動化驗證 9 種 Viewport（320px、375px、390px、430px、768px、1024px、1280px、1440px、1920px），全站無任何頁面級水平捲軸溢出，手機版導覽採用獨立 Drawer。
+- **圖表引擎**：**Apache ECharts**（支援雙主題色彩自適應、高清晰度 Canvas / SVG 渲染、縮放、自訂標記線與即時 PNG 下載）。
 - **資料持久化**：**IndexedDB (`idb`)**，提供完全離線可用、無須帳號的本機實驗資料庫儲存、批次搜尋、篩選與備份。
 - **UI 設計風格**：專業數據工作台風格（參照 Bloomberg Terminal / Datadog / PostHog），字體、間距、色調與操作層級高度一致；無任何花俏裝飾粒子與影響效能之多餘動畫。
 - **防禦性資料處理**：所有 CSV/JSON 匯入均具備空檔案、格式破損、欄位錯位、非數值、轉換數大於訪客數 ($x > N$) 及數千列大檔案之錯誤處理能力。
@@ -103,12 +107,12 @@ npm run test
   - SRM Pearson 卡方統計量與檢定力曲線估算。
   - 檔案解析極端邊界測試（空檔案、非法欄位、非數值、$x > N$、分號/逗號分隔符）。
 
-### 2. 端到端測試 (Playwright E2E)
-涵蓋核心使用者互動流程：
+### 2. 端到端與全 Viewport 響應式測試 (Playwright E2E)
+涵蓋核心使用者互動流程、9 種螢幕解析度與黑白雙主題切換：
 ```bash
 npm run test:e2e
 ```
-- **7 個 E2E 流程通過**：
+- **23 個 E2E 測試全部通過**：
   1. 完整工作台介面載入與初始組件檢查。
   2. 範本案例切換與 SRM 技術警報觸發驗證。
   3. 即時修改組別數據與提升率動態重算。
@@ -116,6 +120,12 @@ npm run test:e2e
   5. 內建 9 項數學基準自主驗證 Modal 執行測試（100% PASS）。
   6. 匯出/分享 Modal 驗證（Markdown 預覽、CSV 下載、JSON 備份）。
   7. IndexedDB 本機資料庫 Modal 讀取與篩選驗證。
+  8. **全 Viewport RWD 驗證 (無水平溢出)**：
+     - 320px (極小型手機)、375px (一般手機)、390px (主流手機)、430px (大型手機)
+     - 768px (平板直向)、1024px (平板橫向)、1280px (筆電)、1440px (桌面)、1920px (大螢幕)
+     - 每個 Viewport 均在 Light Mode 與 Dark Mode 下進行 `scrollWidth <= window.innerWidth` 檢查。
+  9. **主題系統驗證**：System、Light、Dark 模式循環切換、DOM class 切換與 `prefers-color-scheme` 響應。
+  10. **手機版（320px）全流程互動**：抽屜選單展開/收合、計算測試彈窗、分享匯出彈窗、資料庫彈窗與計算機輸入驗證。
 
 ---
 
