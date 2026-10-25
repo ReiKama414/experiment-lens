@@ -1,15 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import type { PowerCalculationInput } from '../types/experiment';
 import { calculateSampleSize } from '../utils/stats';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  ReferenceLine,
-} from 'recharts';
+import { PowerCurveEChart } from './charts/PowerCurveEChart';
 import { Calculator, Calendar, Users, Zap } from 'lucide-react';
 
 interface SampleSizeCalculatorProps {
@@ -38,10 +30,10 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-6">
-      <div className="border-b border-slate-800 pb-4">
-        <h2 className="text-lg font-bold text-white flex items-center gap-2">
-          <Calculator className="w-5 h-5 text-indigo-400" />
+    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-6">
+      <div className="border-b border-slate-800 pb-3">
+        <h2 className="text-base font-semibold text-white flex items-center gap-2">
+          <Calculator className="w-4 h-4 text-indigo-400" />
           <span>樣本量規劃與統計檢定力估算 (Sample Size & Power Planner)</span>
         </h2>
         <p className="text-xs text-slate-400 mt-1">
@@ -52,7 +44,7 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
       {/* Inputs Form Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
         {/* Baseline Conversion Rate */}
-        <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 space-y-1.5">
+        <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1.5">
           <label className="font-semibold text-slate-300 flex items-center justify-between">
             <span>基準轉換率 (Baseline CR)</span>
             <span className="font-mono text-blue-400">
@@ -68,12 +60,12 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
             onChange={(e) =>
               updateParam('baselineRate', Math.max(0.001, parseFloat(e.target.value) / 100 || 0.01))
             }
-            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white font-mono focus:outline-none focus:border-blue-500"
+            className="w-full bg-slate-800 border border-slate-700 rounded-md px-2.5 py-1.5 text-white font-mono focus:outline-none focus:border-blue-500"
           />
         </div>
 
         {/* MDE Input */}
-        <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 space-y-1.5">
+        <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="font-semibold text-slate-300">最小偵測效應 (MDE)</span>
             <div className="inline-flex rounded bg-slate-800 p-0.5 border border-slate-700 text-[10px]">
@@ -81,7 +73,7 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
                 type="button"
                 onClick={() => updateParam('mdeType', 'relative')}
                 className={`px-1.5 py-0.5 rounded ${
-                  params.mdeType === 'relative' ? 'bg-blue-600 text-white' : 'text-slate-400'
+                  params.mdeType === 'relative' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-400'
                 }`}
               >
                 相對 %
@@ -90,7 +82,7 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
                 type="button"
                 onClick={() => updateParam('mdeType', 'absolute')}
                 className={`px-1.5 py-0.5 rounded ${
-                  params.mdeType === 'absolute' ? 'bg-blue-600 text-white' : 'text-slate-400'
+                  params.mdeType === 'absolute' ? 'bg-blue-600 text-white font-semibold' : 'text-slate-400'
                 }`}
               >
                 絕對 pp
@@ -106,7 +98,7 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
               onChange={(e) =>
                 updateParam('mdeValue', Math.max(0.0001, parseFloat(e.target.value) || 1))
               }
-              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white font-mono focus:outline-none focus:border-blue-500 pr-8"
+              className="w-full bg-slate-800 border border-slate-700 rounded-md px-2.5 py-1.5 text-white font-mono focus:outline-none focus:border-blue-500 pr-8"
             />
             <span className="absolute right-2.5 top-2 text-slate-400 font-mono">
               {params.mdeType === 'relative' ? '%' : 'pp'}
@@ -118,7 +110,7 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
         </div>
 
         {/* Statistical Power (1 - beta) */}
-        <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 space-y-1.5">
+        <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1.5">
           <label className="font-semibold text-slate-300 flex items-center justify-between">
             <span>統計檢定力 (Power: 1 - β)</span>
             <span className="font-mono text-indigo-400">{(params.power * 100).toFixed(0)}%</span>
@@ -129,7 +121,7 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
                 key={pow}
                 type="button"
                 onClick={() => updateParam('power', pow)}
-                className={`py-1.5 rounded-lg font-mono text-xs transition ${
+                className={`py-1 rounded-md font-mono text-xs transition ${
                   params.power === pow
                     ? 'bg-indigo-600 text-white font-bold'
                     : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
@@ -140,12 +132,12 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
             ))}
           </div>
           <span className="text-[10px] text-slate-400 block">
-            業界標準通常為 80% (容忍 20% 偽陰性)
+            業界常規門檻為 80% (容忍 20% 偽陰性)
           </span>
         </div>
 
         {/* Significance Level (alpha) */}
-        <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 space-y-1.5">
+        <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1.5">
           <label className="font-semibold text-slate-300 flex items-center justify-between">
             <span>顯著水準 (α, 偽陽性上限)</span>
             <span className="font-mono text-emerald-400">{params.alpha}</span>
@@ -156,7 +148,7 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
                 key={alp}
                 type="button"
                 onClick={() => updateParam('alpha', alp)}
-                className={`py-1.5 rounded-lg font-mono text-xs transition ${
+                className={`py-1 rounded-md font-mono text-xs transition ${
                   params.alpha === alp
                     ? 'bg-emerald-600 text-white font-bold'
                     : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
@@ -169,7 +161,7 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
         </div>
 
         {/* Daily Traffic */}
-        <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 space-y-1.5 sm:col-span-2">
+        <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1.5 sm:col-span-2">
           <label className="font-semibold text-slate-300 flex items-center justify-between">
             <span>預估每日進站總流量 (Total Daily Traffic)</span>
             <span className="text-slate-400 font-mono">
@@ -184,7 +176,7 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
             onChange={(e) =>
               updateParam('dailyTraffic', Math.max(10, parseInt(e.target.value) || 0))
             }
-            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white font-mono focus:outline-none focus:border-blue-500"
+            className="w-full bg-slate-800 border border-slate-700 rounded-md px-2.5 py-1.5 text-white font-mono focus:outline-none focus:border-blue-500"
             placeholder="例如：5000"
           />
         </div>
@@ -193,54 +185,54 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
       {/* Calculated Results Banner */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Sample Size per Variant */}
-        <div className="bg-gradient-to-br from-indigo-950/50 to-slate-900 border border-indigo-500/30 rounded-xl p-4">
-          <div className="flex items-center space-x-2 text-indigo-400 text-xs font-semibold mb-1">
+        <div className="bg-slate-950 border border-slate-800 rounded-lg p-3.5 space-y-1">
+          <div className="flex items-center space-x-1.5 text-indigo-400 text-xs font-semibold">
             <Users className="w-4 h-4" />
             <span>每組所需樣本數 (Per Variant)</span>
           </div>
-          <div className="text-2xl font-black text-white font-mono">
+          <div className="text-2xl font-bold text-white font-mono">
             {result.sampleSizePerVariant.toLocaleString()}
           </div>
-          <span className="text-xs text-slate-400 font-mono mt-1 block">
+          <span className="text-xs text-slate-400 font-mono block">
             兩組總計需 {result.totalSampleSize.toLocaleString()} 人
           </span>
         </div>
 
         {/* Estimated Duration */}
-        <div className="bg-gradient-to-br from-blue-950/50 to-slate-900 border border-blue-500/30 rounded-xl p-4">
-          <div className="flex items-center space-x-2 text-blue-400 text-xs font-semibold mb-1">
+        <div className="bg-slate-950 border border-slate-800 rounded-lg p-3.5 space-y-1">
+          <div className="flex items-center space-x-1.5 text-blue-400 text-xs font-semibold">
             <Calendar className="w-4 h-4" />
             <span>預估測試所需天數</span>
           </div>
-          <div className="text-2xl font-black text-white font-mono">
+          <div className="text-2xl font-bold text-white font-mono">
             {result.estimatedDays > 0 ? `${result.estimatedDays} 天` : '未提供流量'}
           </div>
-          <span className="text-xs text-slate-400 font-mono mt-1 block">
+          <span className="text-xs text-slate-400 font-mono block">
             約 {(result.estimatedDays / 7).toFixed(1)} 週 (建議跑滿完整週循環)
           </span>
         </div>
 
         {/* Target Power */}
-        <div className="bg-gradient-to-br from-emerald-950/50 to-slate-900 border border-emerald-500/30 rounded-xl p-4">
-          <div className="flex items-center space-x-2 text-emerald-400 text-xs font-semibold mb-1">
+        <div className="bg-slate-950 border border-slate-800 rounded-lg p-3.5 space-y-1">
+          <div className="flex items-center space-x-1.5 text-emerald-400 text-xs font-semibold">
             <Zap className="w-4 h-4" />
-            <span>偵測保證能力 (Power)</span>
+            <span>目標檢定力 (Target Power)</span>
           </div>
-          <div className="text-2xl font-black text-emerald-300 font-mono">
+          <div className="text-2xl font-bold text-emerald-400 font-mono">
             {(params.power * 100).toFixed(0)}%
           </div>
-          <span className="text-xs text-slate-400 mt-1 block">
-            當真實提升 ≥ {params.mdeValue}
-            {params.mdeType === 'relative' ? '%' : 'pp'} 時有此機率偵測出顯著
+          <span className="text-xs text-slate-400 block">
+            當真實效應 ≥ {params.mdeValue}
+            {params.mdeType === 'relative' ? '%' : 'pp'} 時有此機率測出顯著
           </span>
         </div>
       </div>
 
-      {/* Interactive Power Curve Chart */}
-      <div className="space-y-2">
+      {/* Interactive Power Curve Chart via ECharts */}
+      <div className="space-y-2 pt-2 border-t border-slate-800">
         <div className="flex items-center justify-between text-xs">
           <span className="font-semibold text-slate-300 uppercase tracking-wider">
-            檢定力曲線 (Statistical Power Curve vs. Sample Size)
+            ECharts 檢定力曲線 (Statistical Power Curve vs. Sample Size)
           </span>
           <span className="text-slate-400 font-mono text-[11px]">
             目前規劃點: N = {result.sampleSizePerVariant.toLocaleString()} (Power{' '}
@@ -248,60 +240,10 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
           </span>
         </div>
 
-        <div className="h-56 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={result.powerCurve}
-              margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
-            >
-              <XAxis
-                dataKey="sampleSize"
-                stroke="#64748b"
-                fontSize={11}
-                tickFormatter={(v) => (v >= 1000 ? `${Math.round(v / 1000)}k` : v)}
-              />
-              <YAxis
-                domain={[0, 100]}
-                stroke="#64748b"
-                fontSize={11}
-                tickFormatter={(v) => `${v}%`}
-              />
-              <Tooltip
-                content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    const data = payload[0].payload;
-                    return (
-                      <div className="bg-slate-800 border border-slate-700 p-2 rounded-lg text-xs space-y-1 shadow-lg">
-                        <div className="text-slate-300">
-                          樣本數: <strong className="text-white">{data.sampleSize.toLocaleString()}</strong>
-                        </div>
-                        <div className="text-indigo-300">
-                          檢定力 (Power): <strong className="text-white">{data.powerPercentage}%</strong>
-                        </div>
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
-              />
-              <ReferenceLine y={80} stroke="#f59e0b" strokeDasharray="3 3" label={{ value: '80% 門檻', fill: '#f59e0b', fontSize: 10 }} />
-              <ReferenceLine y={90} stroke="#10b981" strokeDasharray="3 3" label={{ value: '90% 門檻', fill: '#10b981', fontSize: 10 }} />
-              <ReferenceLine
-                x={result.sampleSizePerVariant}
-                stroke="#6366f1"
-                strokeWidth={2}
-                label={{ value: '建議值', fill: '#818cf8', fontSize: 10 }}
-              />
-              <Line
-                type="monotone"
-                dataKey="powerPercentage"
-                stroke="#6366f1"
-                strokeWidth={2.5}
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        <PowerCurveEChart
+          powerCurve={result.powerCurve}
+          recommendedN={result.sampleSizePerVariant}
+        />
       </div>
     </div>
   );

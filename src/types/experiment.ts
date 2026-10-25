@@ -1,36 +1,19 @@
+export type HypothesisDirection = 'two-sided' | 'greater' | 'less';
+
 export interface Variant {
   id: string;
   name: string;
   visitors: number;
   conversions: number;
   expectedTrafficPercent?: number; // For SRM check (default 50 or 100/N)
-  isControl?: boolean;
-}
-
-export type HypothesisDirection = 'two-sided' | 'greater' | 'less';
-
-export interface ConfidenceLevelOption {
-  label: string;
-  value: number; // e.g. 0.95
-  alpha: number; // e.g. 0.05
+  isControl: boolean;
+  notes?: string;
 }
 
 export interface ProportionCI {
   lower: number;
   upper: number;
   center: number;
-}
-
-export interface VariantStats {
-  id: string;
-  name: string;
-  isControl: boolean;
-  visitors: number;
-  conversions: number;
-  conversionRate: number; // p_hat
-  wilsonCI: ProportionCI;
-  waldCI: ProportionCI;
-  standardError: number;
 }
 
 export interface ComparisonResult {
@@ -53,12 +36,12 @@ export interface ComparisonResult {
   pValueOneSidedGreater: number;
   pValueOneSidedLess: number;
   isSignificant: boolean;
-  // Multiple test adjusted p-value (Bonferroni / Benjamini-Hochberg)
+  // Multiple testing adjusted p-value
   adjustedPValue?: number;
-  // Bayesian metric
+  // Bayesian metrics
   probBBeatsA: number;
-  expectedLossA: number; // if we choose A and B is better
-  expectedLossB: number; // if we choose B and A is better
+  expectedLossA: number;
+  expectedLossB: number;
 }
 
 export interface SRMResult {
@@ -77,6 +60,7 @@ export interface ExperimentSettings {
   enableMultipleTestingCorrection: boolean;
   experimentName: string;
   metricName: string;
+  decisionRule?: 'p-value' | 'bayesian' | 'hybrid';
 }
 
 export interface PowerCalculationInput {
@@ -114,4 +98,21 @@ export interface BusinessImpactResult {
   monthlyAdditionalGrossProfit: number;
   breakEvenMonths: number;
   isEconomicallyViable: boolean;
+}
+
+export type ExperimentStatus = 'draft' | 'running' | 'concluded' | 'archived';
+
+export interface ExperimentRecord {
+  id: string;
+  name: string;
+  metricName: string;
+  description?: string;
+  status: ExperimentStatus;
+  createdAt: number;
+  updatedAt: number;
+  variants: Variant[];
+  settings: ExperimentSettings;
+  powerPlanner?: PowerCalculationInput;
+  businessImpact?: BusinessImpactInput;
+  tags?: string[];
 }

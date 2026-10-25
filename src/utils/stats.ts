@@ -241,6 +241,14 @@ export function calculateWilsonCI(
   const margin =
     (z / denominator) * Math.sqrt((p * (1 - p)) / visitors + z2 / (4 * visitors * visitors));
 
+  if (conversions === visitors) {
+    return {
+      center: 1,
+      lower: Math.max(0, center - margin),
+      upper: 1,
+    };
+  }
+
   return {
     center: p,
     lower: Math.max(0, center - margin),

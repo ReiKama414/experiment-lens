@@ -133,7 +133,7 @@ export function runStatisticalVerificationSuite(): VerificationSuiteSummary {
 
   // 6. Two-Sample Pooled Z-Test benchmark
   const vControl: Variant = { id: 'ctrl', name: 'Control', visitors: 1000, conversions: 100, isControl: true };
-  const vTreatment: Variant = { id: 'trt', name: 'Treatment', visitors: 1000, conversions: 130 };
+  const vTreatment: Variant = { id: 'trt', name: 'Treatment', visitors: 1000, conversions: 130, isControl: false };
   const zTestResult = runTwoSampleTest(vControl, vTreatment, 0.05, 'two-sided', false);
 
   results.push({
@@ -172,8 +172,8 @@ export function runStatisticalVerificationSuite(): VerificationSuiteSummary {
 
   // 8. Sample Ratio Mismatch (SRM) Chi-Square Test
   const srmVariants: Variant[] = [
-    { id: '1', name: 'A', visitors: 10000, conversions: 500, expectedTrafficPercent: 50 },
-    { id: '2', name: 'B', visitors: 9600, conversions: 480, expectedTrafficPercent: 50 },
+    { id: '1', name: 'A', visitors: 10000, conversions: 500, expectedTrafficPercent: 50, isControl: true },
+    { id: '2', name: 'B', visitors: 9600, conversions: 480, expectedTrafficPercent: 50, isControl: false },
   ];
   const srmRes = calculateSRM(srmVariants);
 
@@ -213,11 +213,11 @@ export function runStatisticalVerificationSuite(): VerificationSuiteSummary {
   results.push({
     id: 'sample-size-estimation',
     name: 'Sample Size Estimation (5% Baseline, 10% Rel MDE, 80% Power)',
-    description: 'Standard formula yields ~61,000 - 64,000 users per variant',
+    description: 'Standard formula yields ~31,000 - 32,500 users per variant (兩組總計約 62,000 - 65,000)',
     category: 'Power & Sample Size',
-    expected: '61,000 ~ 64,000',
+    expected: '31,000 ~ 32,500',
     actual: sampleSizeCalc.sampleSizePerVariant.toLocaleString(),
-    passed: sampleSizeCalc.sampleSizePerVariant >= 60000 && sampleSizeCalc.sampleSizePerVariant <= 65000,
+    passed: sampleSizeCalc.sampleSizePerVariant >= 30000 && sampleSizeCalc.sampleSizePerVariant <= 33000,
   });
 
   const durationMs = performance.now() - startTime;

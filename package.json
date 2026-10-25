@@ -7,17 +7,20 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
     "preview": "vite preview"
   },
   "dependencies": {
-    "canvas-confetti": "^1.9.4",
+    "echarts": "^6.1.0",
+    "echarts-for-react": "^3.0.6",
+    "idb": "^8.0.4",
     "lucide-react": "^1.61.0",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1",
-    "recharts": "^3.10.1"
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@types/canvas-confetti": "^1.9.0",
+    "@playwright/test": "^1.64.1",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -27,6 +30,7 @@
     "postcss": "^8.5.31",
     "tailwindcss": "^3.4.19",
     "typescript": "~6.0.3",
-    "vite": "^8.3.4"
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
   }
 }
