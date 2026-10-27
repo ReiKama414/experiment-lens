@@ -254,8 +254,8 @@ export function App() {
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5">
         {/* Experiment Title & Meta Banner */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
-          <div className="flex-1 space-y-1.5 min-w-0">
+        <div data-testid="app-title-banner" className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+          <div data-testid="app-title-info" className="flex-1 space-y-1.5 min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <input
                 type="text"
@@ -289,7 +289,7 @@ export function App() {
           </div>
 
           {/* Workbench Tabs */}
-          <div className="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold overflow-x-auto max-w-full shrink-0">
+          <div data-testid="app-workbench-tabs" className="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold overflow-x-auto max-w-full shrink-0">
             <button
               onClick={() => setActiveTab('analysis')}
               className={`px-3 py-1.5 rounded-md transition flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
@@ -379,7 +379,7 @@ export function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 py-4 mt-8">
+      <footer data-testid="app-footer" className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 py-4 mt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <div className="space-y-0.5">
             <span className="text-slate-800 dark:text-slate-300 font-semibold">

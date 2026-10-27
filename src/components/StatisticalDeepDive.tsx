@@ -70,7 +70,7 @@ export const StatisticalDeepDive: React.FC<StatisticalDeepDiveProps> = ({
                 key={comp.variantId}
                 className="bg-slate-50 dark:bg-slate-950/60 rounded-xl p-4 border border-slate-200 dark:border-slate-800 space-y-4"
               >
-                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2 gap-1">
                   <span className="font-bold text-slate-900 dark:text-white text-base">
                     {comp.variantName} 檢定統計量明細
                   </span>
@@ -203,7 +203,7 @@ export const StatisticalDeepDive: React.FC<StatisticalDeepDiveProps> = ({
 
           {/* Section 2: SRM Chi-Square Goodness-of-Fit Diagnostic */}
           <div className="bg-slate-50 dark:bg-slate-950/60 rounded-xl p-4 border border-slate-200 dark:border-slate-800 space-y-3">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2 gap-1">
               <span className="font-bold text-slate-900 dark:text-white text-base">
                 樣本比例檢定診斷 (SRM Pearson Chi-Square Test)
               </span>

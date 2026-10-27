@@ -215,12 +215,13 @@ export const VariantTable: React.FC<VariantTableProps> = ({
                         placeholder="500"
                       />
                       {hasError && (
-                        <span
-                          className="absolute -bottom-4 right-0 text-[10px] text-rose-500 flex items-center gap-0.5 font-mono"
+                        <div
+                          className="mt-1 text-[10px] text-rose-600 dark:text-rose-400 flex items-center justify-end gap-0.5 font-mono"
                           title="轉換數不可大於訪客數"
                         >
-                          <AlertTriangle className="w-3 h-3" /> x &gt; N
-                        </span>
+                          <AlertTriangle className="w-3 h-3 shrink-0" />
+                          <span>x &gt; N 異常</span>
+                        </div>
                       )}
                     </div>
                   </td>

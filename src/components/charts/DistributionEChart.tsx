@@ -111,16 +111,18 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
         },
       },
       legend: {
-        top: 4,
-        right: 12,
+        type: 'scroll',
+        top: 6,
+        left: 12,
+        right: 48,
         textStyle: { color: isDark ? '#94a3b8' : '#64748b', fontSize: 11 },
         icon: 'circle',
       },
       grid: {
-        left: '2%',
-        right: '3%',
-        top: '14%',
-        bottom: '8%',
+        left: 12,
+        right: 16,
+        top: 48,
+        bottom: 28,
         containLabel: true,
       },
       xAxis: {
@@ -130,6 +132,7 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
         axisLabel: {
           color: isDark ? '#64748b' : '#64748b',
           fontSize: 10,
+          margin: 10,
           interval: Math.floor(steps / 6),
         },
         axisTick: { show: false },
@@ -147,8 +150,8 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
           },
         },
         iconStyle: { borderColor: isDark ? '#64748b' : '#94a3b8' },
-        right: '1%',
-        top: '2%',
+        right: 12,
+        top: 6,
       },
       series,
     };

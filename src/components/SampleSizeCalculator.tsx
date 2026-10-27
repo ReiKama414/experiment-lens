@@ -228,22 +228,95 @@ export const SampleSizeCalculator: React.FC<SampleSizeCalculatorProps> = ({
         </div>
       </div>
 
-      {/* Interactive Power Curve Chart via ECharts */}
-      <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-800">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
-          <span className="font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-            ECharts 檢定力曲線 (Statistical Power Curve vs. Sample Size)
+      {/* Interactive Power Curve Chart Card (Strict 5-Section Document Flow) */}
+      <div
+        data-testid="power-chart-card"
+        className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3 min-w-0"
+      >
+        {/* 1. Header */}
+        <div
+          data-testid="power-chart-header"
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1 border-b border-slate-100 dark:border-slate-800/80 min-w-0"
+        >
+          <span className="font-semibold text-slate-800 dark:text-slate-200 text-sm flex items-center gap-2">
+            <Zap className="w-4 h-4 text-indigo-500" />
+            <span>ECharts 檢定力曲線 (Statistical Power Curve vs. Sample Size)</span>
           </span>
-          <span className="text-slate-500 dark:text-slate-400 font-mono text-[11px]">
-            目前規劃點: N = {result.sampleSizePerVariant.toLocaleString()} (Power{' '}
-            {(params.power * 100).toFixed(0)}%)
+          <span className="text-[10px] font-mono bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800 shrink-0 self-start sm:self-auto">
+            Power Function 1 - β
           </span>
         </div>
 
-        <PowerCurveEChart
-          powerCurve={result.powerCurve}
-          recommendedN={result.sampleSizePerVariant}
-        />
+        {/* 2. Description */}
+        <div data-testid="power-chart-description">
+          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+            呈現當真實效應達指定 MDE（{params.mdeValue}
+            {params.mdeType === 'relative' ? '%' : 'pp'}）時，樣本量從 10% 擴展至 200% 所對應之檢定力（1 - β）。曲線越高代表成功偵測顯著差異之機率越高。
+          </p>
+        </div>
+
+        {/* 3. Statistics */}
+        <div
+          data-testid="power-chart-statistics"
+          className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono min-w-0"
+        >
+          <div className="bg-slate-50 dark:bg-slate-950 p-2 rounded-lg border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-sans">規劃每組樣本</span>
+            <span className="text-sm font-bold text-slate-900 dark:text-white">
+              {result.sampleSizePerVariant.toLocaleString()} 人
+            </span>
+          </div>
+          <div className="bg-slate-50 dark:bg-slate-950 p-2 rounded-lg border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-sans">目標檢定力</span>
+            <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">
+              {(params.power * 100).toFixed(0)}%
+            </span>
+          </div>
+          <div className="bg-slate-50 dark:bg-slate-950 p-2 rounded-lg border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-sans">設定顯著水準 (α)</span>
+            <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+              {params.alpha}
+            </span>
+          </div>
+          <div className="bg-slate-50 dark:bg-slate-950 p-2 rounded-lg border border-slate-200 dark:border-slate-800">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-sans">目標轉換率</span>
+            <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
+              {(result.treatmentRate * 100).toFixed(2)}%
+            </span>
+          </div>
+        </div>
+
+        {/* 4. Chart Area */}
+        <div data-testid="power-chart-plot" className="min-w-0 pt-1">
+          <PowerCurveEChart
+            powerCurve={result.powerCurve}
+            recommendedN={result.sampleSizePerVariant}
+          />
+        </div>
+
+        {/* 5. Legend / Footer */}
+        <div
+          data-testid="power-chart-footer"
+          className="text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950/70 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 min-w-0"
+        >
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-0.5 bg-amber-500 inline-block shrink-0" />
+              <span>黃色虛線：80% 業界常規門檻</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-0.5 bg-emerald-500 inline-block shrink-0" />
+              <span>綠色虛線：90% 高檢定力門檻</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-0.5 bg-indigo-500 inline-block shrink-0" />
+              <span>紫色實線：當前推薦每組規劃點</span>
+            </span>
+          </div>
+          <span className="font-mono text-[10px] text-slate-400">
+            N = {result.sampleSizePerVariant.toLocaleString()}
+          </span>
+        </div>
       </div>
     </div>
   );

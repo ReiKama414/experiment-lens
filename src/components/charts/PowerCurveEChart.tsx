@@ -54,10 +54,10 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
         },
       },
       grid: {
-        left: '4%',
-        right: '4%',
-        top: '12%',
-        bottom: '12%',
+        left: 16,
+        right: 36,
+        top: 36,
+        bottom: 28,
         containLabel: true,
       },
       xAxis: {
@@ -67,6 +67,7 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
         axisLabel: {
           color: '#64748b',
           fontSize: 10,
+          margin: 10,
           formatter: (v: number) => (v >= 1000 ? `${Math.round(v / 1000)}k` : `${v}`),
         },
       },
@@ -79,6 +80,7 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
         axisLabel: {
           color: '#64748b',
           fontSize: 10,
+          margin: 10,
           formatter: '{value}%',
         },
       },
@@ -91,8 +93,8 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
           },
         },
         iconStyle: { borderColor: isDark ? '#64748b' : '#94a3b8' },
-        right: '1%',
-        top: '2%',
+        right: 12,
+        top: 6,
       },
       series: [
         {
@@ -122,10 +124,10 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
                 xAxis: recommendedN,
                 lineStyle: { color: isDark ? '#818cf8' : '#4f46e5', type: 'solid', width: 2 },
                 label: {
-                  formatter: `規劃點: ${recommendedN.toLocaleString()}`,
+                  formatter: `規劃點: ${recommendedN.toLocaleString()} 人`,
                   color: isDark ? '#818cf8' : '#4f46e5',
                   fontSize: 10,
-                  position: 'insideEndTop',
+                  position: 'insideStartTop',
                 },
               },
             ],

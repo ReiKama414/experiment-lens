@@ -147,10 +147,10 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
         },
       },
       grid: {
-        left: '12%',
-        right: '6%',
-        top: '10%',
-        bottom: '15%',
+        left: 16,
+        right: 28,
+        top: 24,
+        bottom: 32,
         containLabel: true,
       },
       xAxis: {
@@ -162,6 +162,7 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
         axisLabel: {
           color: isDark ? '#64748b' : '#64748b',
           fontSize: 10,
+          margin: 10,
           formatter: (v: number) => `${v.toFixed(1)}%`,
         },
       },
@@ -169,7 +170,14 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
         type: 'category',
         data: yCategories,
         axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } },
-        axisLabel: { color: isDark ? '#94a3b8' : '#334155', fontSize: 11 },
+        axisLabel: {
+          color: isDark ? '#94a3b8' : '#334155',
+          fontSize: 11,
+          margin: 12,
+          width: 120,
+          overflow: 'truncate',
+          ellipsis: '...',
+        },
         axisTick: { show: false },
       },
       series: [
@@ -217,8 +225,10 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
     };
   }, []);
 
+  const chartHeight = Math.max(180, comparisons.length * 60 + 50);
+
   return (
-    <div className="w-full h-48 min-w-0">
+    <div className="w-full min-w-0" style={{ height: `${chartHeight}px` }}>
       <div ref={chartRef} className="w-full h-full min-w-0" />
     </div>
   );

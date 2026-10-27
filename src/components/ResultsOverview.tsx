@@ -171,21 +171,21 @@ export const ResultsOverview: React.FC<ResultsOverviewProps> = ({
               }`}
             >
               {/* Header of Card */}
-              <div className="flex items-start justify-between mb-3 border-b border-slate-100 dark:border-slate-800 pb-2.5 gap-2 min-w-0">
-                <div className="min-w-0">
-                  <div className="flex items-center space-x-2 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-3 border-b border-slate-100 dark:border-slate-800 pb-2.5 gap-2 min-w-0">
+                <div className="min-w-0 space-y-0.5">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 min-w-0">
                     <span className="text-sm font-bold text-slate-900 dark:text-white truncate">
                       {comp.variantName}
                     </span>
                     <span className="text-[11px] text-slate-400 font-mono shrink-0">vs {control.name}</span>
                   </div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">
                     雙樣本比例 Z 檢定 · 信心水準 {(settings.confidenceLevel * 100).toFixed(0)}%
                   </div>
                 </div>
 
                 {/* Verdict Badge */}
-                <div className="shrink-0">
+                <div className="shrink-0 self-start sm:self-auto">
                   {srm.hasMismatch ? (
                     <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-800">
                       <AlertTriangle className="w-3.5 h-3.5" />
