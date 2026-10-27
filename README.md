@@ -9,7 +9,8 @@
 [![Vite](https://img.shields.io/badge/Vite-6-646cff?logo=vite)](https://vitejs.dev/)
 [![Apache ECharts](https://img.shields.io/badge/Charts-Apache%20ECharts-e43961?logo=apacheecharts)](https://echarts.apache.org/)
 [![IndexedDB](https://img.shields.io/badge/Storage-IndexedDB%20(idb)-success)](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
-[![Tests Passing](https://img.shields.io/badge/Tests-16%20Unit%20%7C%2023%20E2E%20Pass-emerald)](https://vitest.dev/)
+[![Tests Passing](https://img.shields.io/badge/Tests-16%20Unit%20%7C%2030%20E2E%20Pass-emerald)](https://vitest.dev/)
+[![Zero Overlap](https://img.shields.io/badge/Zero--Overlap-Policy%20Verified-blue)](https://playwright.dev/)
 [![RWD Viewports](https://img.shields.io/badge/RWD-9%20Viewports%20Verified-blue)](https://playwright.dev/)
 [![Dual Theme](https://img.shields.io/badge/Theme-System%20%7C%20Light%20%7C%20Dark-black)](https://tailwindcss.com/)
 
@@ -18,9 +19,12 @@
 ## 🛠 技術棧與架構原則 (Tech Stack & Architecture)
 
 - **前端核心**：React 19 + TypeScript + Vite + Tailwind CSS。
+- **Zero-Overlap 排版與 5 階圖表 Document Flow**：
+  - 嚴格遵守「禁止任何非預期元素重疊、遮擋或擠壓」規範。
+  - 所有圖表卡片皆依標準 Document Flow 切分為獨立 5 大層級：`Header (標題)` → `Description (說明)` → `Statistics (數值摘要)` → `Chart (圖表繪製區)` → `Legend/Footer (圖例與補充資訊)`，嚴禁使用 `position: absolute` 將文字疊於圖表上方。
 - **雙主題系統 (Dual Themes)**：完整支援 System（系統跟隨）、Light Mode（專業白底灰階高對比）與 Dark Mode（深灰沈浸工作台），防閃爍腳本、即時回應 `prefers-color-scheme` 並保存至 `localStorage`。
 - **全響應式版型 (RWD 320px ~ 1920px)**：經 Playwright 實際自動化驗證 9 種 Viewport（320px、375px、390px、430px、768px、1024px、1280px、1440px、1920px），全站無任何頁面級水平捲軸溢出，手機版導覽採用獨立 Drawer。
-- **圖表引擎**：**Apache ECharts**（支援雙主題色彩自適應、高清晰度 Canvas / SVG 渲染、縮放、自訂標記線與即時 PNG 下載）。
+- **圖表引擎**：**Apache ECharts**（支援雙主題色彩自適應、`containLabel: true`、高清晰度 Canvas / SVG 渲染、縮放、自訂標記線與即時 PNG 下載）。
 - **資料持久化**：**IndexedDB (`idb`)**，提供完全離線可用、無須帳號的本機實驗資料庫儲存、批次搜尋、篩選與備份。
 - **UI 設計風格**：專業數據工作台風格（參照 Bloomberg Terminal / Datadog / PostHog），字體、間距、色調與操作層級高度一致；無任何花俏裝飾粒子與影響效能之多餘動畫。
 - **防禦性資料處理**：所有 CSV/JSON 匯入均具備空檔案、格式破損、欄位錯位、非數值、轉換數大於訪客數 ($x > N$) 及數千列大檔案之錯誤處理能力。
@@ -108,11 +112,11 @@ npm run test
   - 檔案解析極端邊界測試（空檔案、非法欄位、非數值、$x > N$、分號/逗號分隔符）。
 
 ### 2. 端到端與全 Viewport 響應式測試 (Playwright E2E)
-涵蓋核心使用者互動流程、9 種螢幕解析度與黑白雙主題切換：
+涵蓋核心使用者互動流程、9 種螢幕解析度、Zero-Overlap Bounding Box 交叉驗證、200% 縮放與黑白雙主題切換：
 ```bash
 npm run test:e2e
 ```
-- **23 個 E2E 測試全部通過**：
+- **30 個 E2E 測試全部通過**：
   1. 完整工作台介面載入與初始組件檢查。
   2. 範本案例切換與 SRM 技術警報觸發驗證。
   3. 即時修改組別數據與提升率動態重算。
@@ -126,6 +130,12 @@ npm run test:e2e
      - 每個 Viewport 均在 Light Mode 與 Dark Mode 下進行 `scrollWidth <= window.innerWidth` 檢查。
   9. **主題系統驗證**：System、Light、Dark 模式循環切換、DOM class 切換與 `prefers-color-scheme` 響應。
   10. **手機版（320px）全流程互動**：抽屜選單展開/收合、計算測試彈窗、分享匯出彈窗、資料庫彈窗與計算機輸入驗證。
+  11. **Zero-Overlap 幾何邊界驗證**：
+      - 抽樣分佈卡片與信賴區間森林圖之 `Header`、`Description`、`Statistics`、`Plot`、`Footer` 5 階層 Bounding Box 嚴格非相交驗證。
+      - 檢定力曲線卡片 5 階層 Bounding Box 嚴格非相交驗證。
+      - 200% 文字/佈局縮放下的非重疊驗證。
+      - 6 組變體擴展下的卡片自然延伸無裁切驗證。
+      - 產出桌面與手機尺寸之 Light / Dark Mode 真實視覺截圖。
 
 ---
 
