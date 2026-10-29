@@ -1,200 +1,256 @@
-# 🔬 Experiment Lens
+# Experiment Lens
 
-> **專業級 A/B 測試分析與統計決策工作台 (A/B Testing Analysis & Statistical Decision Studio)**  
-> 具備雙樣本比例 Z 檢定、Wilson & Newcombe 信賴區間、Apache ECharts 高精度視覺化、SRM 樣本比例失衡偵測、樣本量與檢定力曲線估算、商業價值 ROI 試算、IndexedDB 本機資料庫持久化、無狀態 URL 分享與自主計算測試。
+<p align="center">
+  <strong>English</strong> · [繁體中文](README.zh-TW.md)
+</p>
 
-[![GitHub Pages Deployment](https://img.shields.io/badge/Deployment-GitHub%20Pages-blue?logo=github)](https://pages.github.com/)
-[![React 19](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-6-646cff?logo=vite)](https://vitejs.dev/)
-[![Apache ECharts](https://img.shields.io/badge/Charts-Apache%20ECharts-e43961?logo=apacheecharts)](https://echarts.apache.org/)
-[![IndexedDB](https://img.shields.io/badge/Storage-IndexedDB%20(idb)-success)](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
-[![Tests Passing](https://img.shields.io/badge/Tests-16%20Unit%20%7C%2030%20E2E%20Pass-emerald)](https://vitest.dev/)
-[![Zero Overlap](https://img.shields.io/badge/Zero--Overlap-Policy%20Verified-blue)](https://playwright.dev/)
-[![RWD Viewports](https://img.shields.io/badge/RWD-9%20Viewports%20Verified-blue)](https://playwright.dev/)
-[![Dual Theme](https://img.shields.io/badge/Theme-System%20%7C%20Light%20%7C%20Dark-black)](https://tailwindcss.com/)
+> **Experiment Lens** is a **professional A/B testing analysis and statistical decision studio** engineered for product managers, data analysts, and growth engineers. It features rigorous two-sample hypothesis testing, Wilson Score and Newcombe Hybrid confidence intervals, Sample Ratio Mismatch (SRM) diagnostics, power curve planning, business ROI evaluation, and offline IndexedDB persistence.
 
----
+<p align="center">
+  <img src="./assets/screenshots/workbench-light.png" alt="Experiment Lens Light Mode Workbench" width="850" />
+</p>
 
-## 🛠 技術棧與架構原則 (Tech Stack & Architecture)
+<p align="center">
+  <img src="https://img.shields.io/badge/Deployment-GitHub%20Pages-181717?logo=github" alt="GitHub Pages Deployment" />
+  <img src="https://img.shields.io/badge/React-19-61dafb?logo=react" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript" alt="TypeScript 5" />
+  <img src="https://img.shields.io/badge/Vite-6-646cff?logo=vite" alt="Vite 6" />
+  <img src="https://img.shields.io/badge/Charts-Apache%20ECharts-e43961?logo=apacheecharts" alt="Apache ECharts" />
+  <img src="https://img.shields.io/badge/Storage-IndexedDB%20(idb)-22c55e" alt="IndexedDB Storage" />
+  <img src="https://img.shields.io/badge/Tests-16%20Unit%20%7C%2030%20E2E%20Pass-emerald" alt="Tests 100% Pass" />
+  <img src="https://img.shields.io/badge/Zero--Overlap-Policy%20Verified-blue" alt="Zero-Overlap Layout Verified" />
+  <img src="https://img.shields.io/badge/License-All%20Rights%20Reserved-red" alt="All Rights Reserved" />
+</p>
 
-- **前端核心**：React 19 + TypeScript + Vite + Tailwind CSS。
-- **Zero-Overlap 排版與 5 階圖表 Document Flow**：
-  - 嚴格遵守「禁止任何非預期元素重疊、遮擋或擠壓」規範。
-  - 所有圖表卡片皆依標準 Document Flow 切分為獨立 5 大層級：`Header (標題)` → `Description (說明)` → `Statistics (數值摘要)` → `Chart (圖表繪製區)` → `Legend/Footer (圖例與補充資訊)`，嚴禁使用 `position: absolute` 將文字疊於圖表上方。
-- **雙主題系統 (Dual Themes)**：完整支援 System（系統跟隨）、Light Mode（專業白底灰階高對比）與 Dark Mode（深灰沈浸工作台），防閃爍腳本、即時回應 `prefers-color-scheme` 並保存至 `localStorage`。
-- **全響應式版型 (RWD 320px ~ 1920px)**：經 Playwright 實際自動化驗證 9 種 Viewport（320px、375px、390px、430px、768px、1024px、1280px、1440px、1920px），全站無任何頁面級水平捲軸溢出，手機版導覽採用獨立 Drawer。
-- **圖表引擎**：**Apache ECharts**（支援雙主題色彩自適應、`containLabel: true`、高清晰度 Canvas / SVG 渲染、縮放、自訂標記線與即時 PNG 下載）。
-- **資料持久化**：**IndexedDB (`idb`)**，提供完全離線可用、無須帳號的本機實驗資料庫儲存、批次搜尋、篩選與備份。
-- **UI 設計風格**：專業數據工作台風格（參照 Bloomberg Terminal / Datadog / PostHog），字體、間距、色調與操作層級高度一致；無任何花俏裝飾粒子與影響效能之多餘動畫。
-- **防禦性資料處理**：所有 CSV/JSON 匯入均具備空檔案、格式破損、欄位錯位、非數值、轉換數大於訪客數 ($x > N$) 及數千列大檔案之錯誤處理能力。
-
----
-
-## 📋 功能特點 (Key Capabilities)
-
-### 1. 雙樣本比例統計檢定 (Two-Sample Hypothesis Testing)
-* **檢定統計量**：
-  * 合併標準誤（Pooled SE: $\sqrt{\hat{p}_{\text{pool}}(1-\hat{p}_{\text{pool}})(1/N_A + 1/N_B)}$）檢定虛無假設 $H_0: p_A = p_B$。
-  * 支援**雙尾檢定**（$p_B \neq p_A$）、**單尾大於**（$p_B > p_A$）與**單尾小於**（$p_B < p_A$）。
-  * Yates 連續性校正（Continuity Correction）選項。
-* **高精度信賴區間**：
-  * **Wilson Score 區間**：各組轉換率均採用 Wilson 評分法，在轉換數極少（$x=0$）或比率極端時皆保持精確覆蓋率，不發生 Wald 區間坍縮為 0 的病態現象。
-  * **Newcombe Hybrid Score 區間**：絕對提升（$\Delta p = p_B - p_A$）採用 Newcombe 綜合法，嚴格維持名目 95% 信賴水準。
-  * **Delta Method 相對提升區間**：針對對數相對風險 $\ln(p_B / p_A)$ 進行一階展開，給出精確的相對百分比區間。
-* **多重比較校正**：
-  * 多組實驗組（A/B/n）時提供 **Benjamini-Hochberg (FDR)** 偽發現率與 Bonferroni 校正，防止型一誤差膨脹。
-* **貝氏後驗勝率與期望損失**：
-  * 以均勻無資訊先驗 $\text{Beta}(1, 1)$ 為起點，估計實驗組勝出機率 $P(B > A)$ 與選擇 B 或對照組 A 的期望決策風險（Expected Loss）。
-
-### 2. 樣本比例失衡診斷 (Sample Ratio Mismatch, SRM)
-* 透過 **Pearson 卡方適合度檢定 ($\chi^2 = \sum \frac{(O_i - E_i)^2}{E_i}$)** 檢驗各組分流訪客數是否偏離預期權重。
-* $p < 0.001$ 時發出嚴重技術警報，提醒團隊排查：
-  - 轉址白屏或快取導致實驗組流失
-  - 特定裝置或瀏覽器追蹤碼丟失
-  - 機器人灌水或分流隨機雜湊偏誤
-* **核心防禦提醒**：若存在 SRM，代表樣本收集過程已遭污染，任何顯著性結果均不可直接採信！
-
-### 3. ECharts 視覺化分佈與誤差圖
-* **轉換率抽樣密度鐘型曲線 (Sampling Distributions)**：視覺化各組 $\mathcal{N}(\mu, \sigma^2)$ 常態近似分佈的重疊面積。
-* **絕對提升信賴區間森林圖 (Forest Plot)**：直觀呈現各變體相對於 $0$ 基準線的區間跨距，綠色代表顯著勝出、紅色代表顯著落後、灰色代表未達顯著。
-* **圖表工具箱**：內建一鍵輸出 2x 高解析度 PNG 圖片功能。
-
-### 4. 樣本量與檢定力規劃器 (Power & Sample Size Planner)
-* 輸入基準轉換率 ($p_1$)、最小偵測效應（MDE，相對 % 或絕對 pp）、顯著水準 $\alpha$、檢定力 $1 - \beta$ 與每日進站流量。
-* 計算每組所需樣本數 ($N$)、總樣本量與預估測試時長。
-* **ECharts 檢定力曲線**：以折線圖呈現樣本數與檢定力的函數關係，標注 80% 與 90% 行業基準線與目前規劃點。
-
-### 5. 商業價值評估與假設防禦 (Business Significance & Guardrails)
-* **統計顯著 $\neq$ 具有商業價值**：
-  * **超大樣本陷阱（Massive Sample Trap）**：在百萬樣本下，即使只有 0.02% 的微小提升也會使 $p < 0.001$，但額外營收若無法負擔架構維護與伺服器成本，上線反而造成虧損。
-  * **實質 ROI 試算機**：輸入全站每月流量、平均客單價（AOV）、毛利率與工程成本，即時換算額外毛利與回本週期。
-* **決策防禦清單**：
-  * 偷窺偏誤（Peeking Problem / Continuous Monitoring）：頻繁偷看並在剛顯著時提前終止，會使真實偽陽性率膨脹至 30%~40%。
-  * 新奇效應（Novelty Effect）與主要習慣抗拒。
-  * 至少跑滿 1~2 週完整商業週期（避免星期幾效應 Day-of-Week Effect）。
-  * 隨機單位一致性：必須以獨立使用者（User-level）為分母，不可使用工作階段（Session-level）。
-
-### 6. IndexedDB 本機儲存庫 (Experiment Database)
-* 自動將目前實驗之數據、組別、設定、狀態（草稿、進行中、已結案、封存）保存至瀏覽器 IndexedDB。
-* 支援實驗複製（Duplicate）、刪除、即時搜尋、標籤篩選與歷史還原。
-* 支援整庫備份為標準 JSON 檔案。
-
-### 7. 檔案匯入/匯出與無狀態 URL 重現
-* **匯入容錯**：
-  - 支援 CSV（自動識別逗號、分號、Tab，智慧匹配欄位名稱）。
-  - 支援 JSON（支援單一實驗檔或批次整庫匯入）。
-  - 自動攔截：空檔案、欄位不足、非正整數、轉換數大於訪客數 ($x > N$) 等異常。
-* **匯出功能**：
-  - CSV 數據表（包含各組轉化率、各項信賴區間、Z 分數與 P 值）。
-  - Markdown 決策報告（可直接貼入 Slack、Jira、Notion、GitHub PR）。
-  - JSON 設定檔（包含完整參數）。
-  - 壓縮狀態 URL Hash（`#exp=...`，透過 Base64 安全編碼，點擊連結即可 100% 還原實驗設定）。
+<p align="center">
+  <a href="https://github.com/ReiKama414/experiment-lens">GitHub Repository</a> · 
+  <a href="https://reikama414.vercel.app/">Portfolio</a> · 
+  <a href="#quick-start">Quick Start</a> · 
+  <a href="#workflow">Workflow</a> · 
+  <a href="#license">License</a>
+</p>
 
 ---
 
-## 🧪 測試驗證 (Testing & Verification)
+## Why Experiment Lens
 
-本專案經過嚴格的雙層自動化測試驗證：
+When evaluating online experiments, teams frequently stumble into standard pitfalls: degenerate Wald confidence intervals at extreme proportions, undetected Sample Ratio Mismatch (SRM) invalidating random assignment, continuous monitoring ("peeking") inflating false positives, or treating minor statistical significance as real-world business value.
 
-### 1. 單元測試 (Vitest)
-涵蓋統計公式精度、邊界值、檔案解析與錯誤防禦：
-```bash
-npm run test
-```
-- **16 個單元測試通過**：
-  - 標準常態分佈 CDF 與逆分位數數值精度（誤差 $< 10^{-4} \sim 10^{-7}$）。
-  - Wilson 區間邊界條件（$x=0$ 與 $x=N$ 非簡併測試）。
-  - Newcombe 區間差值涵蓋性測試。
-  - Delta Method 相對提升對數轉換測試。
-  - 雙樣本 Z 檢定統計量與雙尾 P 值標準基準。
-  - SRM Pearson 卡方統計量與檢定力曲線估算。
-  - 檔案解析極端邊界測試（空檔案、非法欄位、非數值、$x > N$、分號/逗號分隔符）。
-
-### 2. 端到端與全 Viewport 響應式測試 (Playwright E2E)
-涵蓋核心使用者互動流程、9 種螢幕解析度、Zero-Overlap Bounding Box 交叉驗證、200% 縮放與黑白雙主題切換：
-```bash
-npm run test:e2e
-```
-- **30 個 E2E 測試全部通過**：
-  1. 完整工作台介面載入與初始組件檢查。
-  2. 範本案例切換與 SRM 技術警報觸發驗證。
-  3. 即時修改組別數據與提升率動態重算。
-  4. 多工作頁籤切換（A/B 檢定、樣本量規劃、商業價值 ROI 試算）。
-  5. 內建 9 項數學基準自主驗證 Modal 執行測試（100% PASS）。
-  6. 匯出/分享 Modal 驗證（Markdown 預覽、CSV 下載、JSON 備份）。
-  7. IndexedDB 本機資料庫 Modal 讀取與篩選驗證。
-  8. **全 Viewport RWD 驗證 (無水平溢出)**：
-     - 320px (極小型手機)、375px (一般手機)、390px (主流手機)、430px (大型手機)
-     - 768px (平板直向)、1024px (平板橫向)、1280px (筆電)、1440px (桌面)、1920px (大螢幕)
-     - 每個 Viewport 均在 Light Mode 與 Dark Mode 下進行 `scrollWidth <= window.innerWidth` 檢查。
-  9. **主題系統驗證**：System、Light、Dark 模式循環切換、DOM class 切換與 `prefers-color-scheme` 響應。
-  10. **手機版（320px）全流程互動**：抽屜選單展開/收合、計算測試彈窗、分享匯出彈窗、資料庫彈窗與計算機輸入驗證。
-  11. **Zero-Overlap 幾何邊界驗證**：
-      - 抽樣分佈卡片與信賴區間森林圖之 `Header`、`Description`、`Statistics`、`Plot`、`Footer` 5 階層 Bounding Box 嚴格非相交驗證。
-      - 檢定力曲線卡片 5 階層 Bounding Box 嚴格非相交驗證。
-      - 200% 文字/佈局縮放下的非重疊驗證。
-      - 6 組變體擴展下的卡片自然延伸無裁切驗證。
-      - 產出桌面與手機尺寸之 Light / Dark Mode 真實視覺截圖。
+Experiment Lens bridges mathematical rigor with actionable business intuition. All calculations run client-side in the browser, safeguarding proprietary experiment data without requiring third-party cloud APIs.
 
 ---
 
-## 💻 本地安裝與運行 (Local Development)
+## Highlights
+
+- **High-Precision Hypothesis Testing** — Two-sample Z-test with pooled standard error, two-sided and one-sided alternatives, and optional Yates continuity correction.
+- **Robust Confidence Intervals** — Wilson Score intervals for group proportions, Newcombe Hybrid Score intervals for absolute lift ($\Delta p$), and Delta Method log-scale intervals for relative lift.
+- **Multiple Comparison Guardrails** — Benjamini-Hochberg (FDR) and Bonferroni corrections for multi-variant (A/B/n) experiments.
+- **SRM Sample Ratio Mismatch Diagnostic** — Pearson $\chi^2$ goodness-of-fit test detecting traffic routing anomalies, caching discrepancies, or tracking loss before decisions are made.
+- **Zero-Overlap Five-Layer Document Flow** — Strict card structure: Header $\to$ Description $\to$ Statistics $\to$ Chart $\to$ Footer, eliminating overlapping text over canvas elements.
+- **Interactive Apache ECharts** — High-definition Gaussian sampling distributions, confidence interval forest plots, and statistical power curves with instant PNG export.
+- **Business ROI & Decision Guardrails** — Financial ROI calculator converting percentage lifts to gross profit and payback periods, paired with assumption checklists for peeking bias, novelty effects, and randomization unit consistency.
+- **Full RWD & Dual Themes** — Verified across 9 viewports (320px to 1920px) with zero horizontal overflow, supporting System, Light, and Dark modes.
+- **Client-Side IndexedDB Storage** — Account-free persistent local database with search, tags, JSON import/export, and stateless compressed URL hash sharing.
+
+---
+
+## Tech Stack
+
+| Domain | Technology | Description |
+| --- | --- | --- |
+| Core Framework | React 19 · TypeScript 5 | Strict type safety, modular component architecture, and custom hooks |
+| Build Tool | Vite 6 | High-speed HMR dev server and optimized tree-shaken production bundles |
+| Styling | Tailwind CSS | Bloomberg-style high-contrast data workstation aesthetics and dual theme variables |
+| Charting | Apache ECharts · echarts-for-react | Canvas/SVG rendering, theme adaptation, marklines, and interactive tooltips |
+| Persistence | IndexedDB (`idb`) | Client-side sandbox structured storage without external backend servers |
+| Iconography | Lucide React | Clean, consistent linear icon set |
+| Verification | Vitest · Playwright | 16 mathematical unit tests and 30 end-to-end multi-viewport tests |
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 20+ or 22+
+- npm 10+
+- Modern desktop or mobile browser (Chrome, Edge, Safari, Firefox)
+
+### Installation & Launch
 
 ```bash
-# 1. 複製專案庫
-git clone <repository-url>
+# Clone the repository
+git clone https://github.com/ReiKama414/experiment-lens.git
 cd experiment-lens
 
-# 2. 安裝相依套件
+# Install dependencies
 npm install
 
-# 3. 啟動本地開發伺服器
+# Start local development server
 npm run dev
+```
 
-# 4. 執行型別檢查與生產打包
+Open the printed local URL (default: `http://localhost:5173`) in your browser.
+
+### Production Build
+
+```bash
+# Type check and build bundle
 npm run build
 
-# 5. 執行單元測試
-npm run test
-
-# 6. 執行 Playwright 端到端驗證
-npm run test:e2e
+# Preview production build locally
+npm run preview
 ```
 
 ---
 
-## 🌐 部署至 GitHub Pages (Deployment)
+## Workflow
 
-專案已配置 `vite.config.ts` 的 `base: './'`，完全支援 GitHub Pages 靜態託管，並內建 GitHub Actions 自動部署工作流程檔 `.github/workflows/deploy.yml`。
+```
+Input Data (Manual / Import) → Statistical Testing & SRM Check → ECharts Visual Analysis → Business ROI Evaluation → Export Decision Report
+```
 
-### 部署步驟
-1. 將專案推送到 GitHub：
+1. **Select or Create Experiment**: Switch between built-in presets (E-commerce Checkout, SaaS Signup, Multi-tier Pricing) or click "新實驗" (New Experiment) to clear inputs.
+2. **Enter Sample Sizes & Conversions**: Fill in variant names, sample sizes ($N$), and conversions ($x$). Use "＋新增變體" to add multiple variants.
+3. **Inspect SRM Diagnostic**: Review the SRM badge in the overview panel. If $p < 0.001$, traffic assignment is compromised; engineering fixes are required before analyzing results.
+4. **Deep-Dive Statistics**:
+   - Choose test direction (two-tailed, one-tailed greater, one-tailed less) and significance level $\alpha$.
+   - Enable continuity correction or Benjamini-Hochberg FDR correction.
+   - Inspect Wilson Score intervals, Newcombe difference intervals, and Beta-Binomial Bayesian win probabilities.
+5. **Sample Size & Power Planning**: Switch to "樣本量與檢定力" (Sample Size & Power) to calculate required sample size, duration, and the power curve based on MDE and daily traffic.
+6. **Business Significance Guardrails**: Switch to "商業價值評估" (Business Guardrails) to compute net monetary gain and check assumptions against novelty effects and peeking bias.
+7. **Export & Share**: Open "匯出／分享" (Export & Share) to download CSV data, copy formatted Markdown reports, export JSON backups, or share compressed URL hashes.
+
+---
+
+## Project Structure
+
+```
+experiment-lens/
+├── assets/                  # Project assets and screenshot specifications
+│   ├── screenshots/         # Light and dark mode workbench captures
+│   └── ASSET_REQUESTS.md    # Image asset requests
+├── src/
+│   ├── components/          # UI components
+│   │   ├── charts/          # ECharts distribution, forest, and power charts
+│   │   ├── BusinessValueGuardrails.tsx # Business ROI and assumption checklist
+│   │   ├── ExperimentManagerModal.tsx  # IndexedDB local storage modal
+│   │   ├── Header.tsx                  # Navigation and theme switch
+│   │   ├── ResultsOverview.tsx         # Primary metrics and SRM check
+│   │   ├── SampleSizeCalculator.tsx    # Power calculator and planner
+│   │   ├── ShareExportModal.tsx        # Report export and URL sharing
+│   │   ├── StatisticalDeepDive.tsx     # Detailed hypothesis tests
+│   │   ├── VariantTable.tsx            # Data input table
+│   │   ├── VerificationModal.tsx       # Mathematical baseline verification
+│   │   └── VisualDistributions.tsx     # 5-layer document flow charts
+│   ├── context/             # Theme context (System / Light / Dark)
+│   ├── db/                  # IndexedDB persistence layer
+│   ├── types/               # TypeScript interfaces
+│   └── utils/               # Statistical engine (stats, fileIO, presets, export)
+├── tests/                   # Automated test suites
+│   ├── stats.test.ts        # Mathematical unit tests
+│   ├── fileIO.test.ts       # Defensive parser unit tests
+│   └── e2e/                 # Playwright E2E and responsive suites
+├── index.html               # Application HTML entry
+├── vite.config.ts           # Vite configuration
+└── tailwind.config.js       # Tailwind CSS theme setup
+```
+
+---
+
+## Screenshots
+
+<p align="center">
+  <img src="./assets/screenshots/workbench-light.png" alt="Experiment Lens Light Mode — Desktop Workbench" width="800" />
+</p>
+<p align="center"><em>Light Mode — High-Contrast Data Workstation</em></p>
+
+<p align="center">
+  <img src="./assets/screenshots/workbench-dark.png" alt="Experiment Lens Dark Mode — Desktop Workbench" width="800" />
+</p>
+<p align="center"><em>Dark Mode — Immersive Dark Workstation</em></p>
+
+---
+
+## Testing & Verification
+
+The project is safeguarded by two tiers of automated tests:
+
+### 1. Unit Tests (Vitest)
+
+Verifies mathematical precision, boundary conditions, and file fault tolerance:
+
+```bash
+npm run test
+```
+
+- **16 Unit Tests Passed (100%)**:
+  - Standard normal CDF and inverse CDF precision ($< 10^{-6}$).
+  - Wilson Score non-degeneracy at boundary conditions ($x=0$ and $x=N$).
+  - Newcombe Hybrid Score difference coverage.
+  - Delta Method log-scale relative lift transformation.
+  - Pearson $\chi^2$ goodness-of-fit and SRM detection.
+  - File parser fault tolerance: empty files, missing columns, non-integer values, $x > N$, and delimiter auto-detection.
+
+### 2. End-to-End & Layout Tests (Playwright)
+
+Validates user interactions, 9 viewport responsive layouts, zero-overlap geometry, and theme switching:
+
+```bash
+npm run test:e2e
+```
+
+- **30 E2E Tests Passed (100%)**:
+  - **9 Viewport RWD Zero Horizontal Overflow**: 320px, 375px, 390px, 430px, 768px, 1024px, 1280px, 1440px, and 1920px.
+  - **Zero-Overlap Policy Enforcement**: Strict non-intersection checks across Header, Description, Statistics, Chart, and Footer bounding boxes.
+  - **200% Browser Zoom Scaling**: Natural card expansion without clipped content.
+  - **Theme System**: Immediate System, Light, and Dark switching with persistent state.
+
+---
+
+## Deployment
+
+The application is pre-configured for static hosting on GitHub Pages, Vercel, or Cloudflare Pages.
+
+### Deploying to GitHub Pages
+
+A ready-to-run GitHub Actions workflow is provided at `.github/workflows/deploy.yml`:
+
+1. Push code to your GitHub repository:
    ```bash
    git add .
    git commit -m "feat: complete production-ready Experiment Lens studio"
    git push origin main
    ```
-2. 前往儲存庫的 **Settings** -> **Pages**。
-3. 在 **Build and deployment** -> **Source** 選擇 **GitHub Actions**。
-4. 部署工作流程完成後，即可直接線上使用！
+2. In your GitHub repository, navigate to **Settings → Pages**.
+3. Under **Build and deployment → Source**, select **GitHub Actions**.
+4. Once the workflow finishes, the site is live.
 
 ---
 
-## ⚠️ 已知限制與適用範圍 (Known Limitations)
+## Known Limitations
 
-1. **二元轉換指標專用 (Binary Proportions Only)**：
-   - 本工具專門針對二元伯努利事件（0 或 1，例如「點擊率 CTR」、「購買轉化率 CVR」、「註冊完成率」）設計。
-   - 若您的測試指標為**連續型數值**（例如「平均客單價 AOV」、「每位使用者平均收入 ARPU」、「網頁停留秒數」），應使用雙樣本 T 檢定（Two-sample T-test）、Welch's T-test 或非參數 Bootstrap 重抽樣法，不可直接套用二項比例公式。
-2. **本機 IndexedDB 儲存邊界**：
-   - 實驗紀錄預設持久化儲存於當前瀏覽器的 IndexedDB 沙盒中，無須註冊帳號或依賴雲端伺服器。
-   - 若使用者手動清除瀏覽器網站資料、開啟無痕模式（Incognito）或更換瀏覽器，本機儲存庫將無法跨環境讀取。強烈建議透過「匯出 / 分享」產出 JSON 備份或使用 URL 分享連結保存重要實驗。
-3. **網絡外部性與干擾 (Network Interference / SUTVA)**：
-   - 雙樣本獨立檢定建立於 SUTVA（Stable Unit Treatment Value Assumption）基礎上。若產品具強社交網絡效應（例如：雙邊市集買賣雙方、通訊軟體群組），實驗組與對照組使用者會互相影響，導致標準誤低估，需改採叢集成群抽樣（Cluster Randomization）或切換地區分流。
-4. **隨機分流單位 (Unit of Randomization)**：
-   - 訪客數分母必須是**獨立使用者（User ID / Cookie ID）**，不可將工作階段（Session）或點擊事件（Click count）作為獨立樣本分母，否則同一人重複造訪會造成偽重複抽樣，使顯著性過度樂觀。
+> **Note:** Please review the following mathematical and architectural considerations before drawing conclusions.
+
+1. **Binary Proportions Only** — Designed specifically for Bernoulli conversion metrics (CTR, conversion rate, signup rate). For continuous metrics (AOV, ARPU, session duration), use Two-Sample T-tests, Welch's T-test, or non-parametric bootstrap resampling instead of binary proportion formulas.
+2. **Unit of Randomization** — The sample denominator must represent independent users (User ID or persistent Cookie ID), not sessions or page views. Correlated visits inflate false positives and underestimate standard errors.
+3. **Network Effects & Interference** — Tests assume SUTVA (Stable Unit Treatment Value Assumption). If users interact within social networks or two-sided marketplaces, cluster randomization or switchback testing should be applied.
+4. **Local Sandbox Persistence** — Data is stored within the browser's IndexedDB sandbox. Clearing browser history or operating in private/incognito mode will not retain saved experiments. Use "匯出／分享" (Export & Share) to generate JSON backups.
 
 ---
 
-## 📄 License
-MIT License.
+## License
+
+Copyright (c) 2026 ReiKama414. All rights reserved.
+
+This project is provided solely for personal viewing and learning purposes. No permission is granted to use, copy, modify, distribute, or incorporate this software into other projects (including non-commercial use) without prior written consent.
+
+- [GitHub Repository](https://github.com/ReiKama414/experiment-lens)
+- [Portfolio](https://reikama414.vercel.app/)
+- [Full License](./LICENSE)
+
+---
+
+<p align="center">
+  <sub>Experiment Lens · Professional A/B Testing Analysis & Statistical Decision Studio</sub>
+</p>

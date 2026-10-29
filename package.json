@@ -2,6 +2,7 @@
   "name": "experiment-lens",
   "private": true,
   "version": "0.0.0",
+  "license": "UNLICENSED",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -398,7 +398,16 @@ export function App() {
               <span>通過 9 項統計數學基準測試</span>
             </button>
             <span>·</span>
-            <span>支援 GitHub Pages 靜態部署</span>
+            <a
+              href="https://reikama414.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-600 dark:hover:text-blue-400 transition"
+            >
+              ReiKama414
+            </a>
+            <span>·</span>
+            <span>All Rights Reserved</span>
           </div>
         </div>
       </footer>
