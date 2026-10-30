@@ -9,22 +9,24 @@ export default {
     extend: {
       colors: {
         brand: {
-          50: '#f0f7ff',
-          100: '#e0effe',
-          200: '#b9ddfd',
-          300: '#7cc2fb',
-          400: '#36a2f6',
-          500: '#0c84e4',
-          600: '#0268c3',
-          700: '#03539e',
-          800: '#074782',
-          900: '#0b3c6d',
-          950: '#072648',
+          50: '#f0fdf4',
+          100: '#dcfce7',
+          500: '#10b981',
+          600: '#059669',
+          700: '#047857',
+        },
+        workbench: {
+          bg: '#09090b',
+          card: '#18181b',
+          border: '#27272a',
+          hover: '#222226',
+          text: '#fafafa',
+          muted: '#a1a1aa',
         }
       },
       fontFamily: {
+        mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace']
       }
     },
   },

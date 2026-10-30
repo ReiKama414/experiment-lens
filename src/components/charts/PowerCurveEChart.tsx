@@ -43,9 +43,10 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
       animation: false,
       tooltip: {
         trigger: 'axis',
-        backgroundColor: isDark ? '#0f172a' : '#ffffff',
-        borderColor: isDark ? '#334155' : '#e2e8f0',
-        textStyle: { color: isDark ? '#e2e8f0' : '#0f172a', fontSize: 12 },
+        backgroundColor: isDark ? '#18181b' : '#ffffff',
+        borderColor: isDark ? '#27272a' : '#e4e4e7',
+        textStyle: { color: isDark ? '#fafafa' : '#09090b', fontSize: 12 },
+        extraCssText: `box-shadow: ${isDark ? '0 10px 15px -3px rgba(0,0,0,0.5)' : '0 10px 15px -3px rgba(0,0,0,0.1)'}; border-radius: 8px;`,
         formatter: (params: any) => {
           if (!Array.isArray(params) || params.length === 0) return '';
           const [n, p] = params[0].data;
@@ -62,10 +63,10 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
       },
       xAxis: {
         type: 'value',
-        axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } },
-        splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9' } },
+        axisLine: { lineStyle: { color: isDark ? '#3f3f46' : '#d4d4d8' } },
+        splitLine: { lineStyle: { color: isDark ? '#27272a' : '#f4f4f5' } },
         axisLabel: {
-          color: '#64748b',
+          color: isDark ? '#71717a' : '#71717a',
           fontSize: 10,
           margin: 10,
           formatter: (v: number) => (v >= 1000 ? `${Math.round(v / 1000)}k` : `${v}`),
@@ -75,10 +76,10 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
         type: 'value',
         min: 0,
         max: 100,
-        axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } },
-        splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9' } },
+        axisLine: { lineStyle: { color: isDark ? '#3f3f46' : '#d4d4d8' } },
+        splitLine: { lineStyle: { color: isDark ? '#27272a' : '#f4f4f5' } },
         axisLabel: {
-          color: '#64748b',
+          color: isDark ? '#71717a' : '#71717a',
           fontSize: 10,
           margin: 10,
           formatter: '{value}%',
@@ -89,10 +90,10 @@ export const PowerCurveEChart: React.FC<PowerCurveEChartProps> = ({
           saveAsImage: {
             title: '儲存檢定力曲線 PNG',
             pixelRatio: 2,
-            backgroundColor: isDark ? '#0f172a' : '#ffffff',
+            backgroundColor: isDark ? '#18181b' : '#ffffff',
           },
         },
-        iconStyle: { borderColor: isDark ? '#64748b' : '#94a3b8' },
+        iconStyle: { borderColor: isDark ? '#71717a' : '#a1a1aa' },
         right: 12,
         top: 6,
       },

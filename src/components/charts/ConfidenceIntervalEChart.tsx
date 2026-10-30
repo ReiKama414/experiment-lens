@@ -55,8 +55,8 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
           ? '#10b981'
           : '#f43f5e'
         : isDark
-        ? '#94a3b8'
-        : '#64748b';
+        ? '#a1a1aa'
+        : '#71717a';
 
       const style = {
         stroke: strokeColor,
@@ -126,9 +126,10 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
       animation: false,
       tooltip: {
         trigger: 'item',
-        backgroundColor: isDark ? '#0f172a' : '#ffffff',
-        borderColor: isDark ? '#334155' : '#e2e8f0',
-        textStyle: { color: isDark ? '#e2e8f0' : '#0f172a', fontSize: 12 },
+        backgroundColor: isDark ? '#18181b' : '#ffffff',
+        borderColor: isDark ? '#27272a' : '#e4e4e7',
+        textStyle: { color: isDark ? '#fafafa' : '#09090b', fontSize: 12 },
+        extraCssText: `box-shadow: ${isDark ? '0 10px 15px -3px rgba(0,0,0,0.5)' : '0 10px 15px -3px rgba(0,0,0,0.1)'}; border-radius: 8px;`,
         formatter: (params: any) => {
           const val = params.value;
           const center = Number(val[0]).toFixed(2);
@@ -136,12 +137,12 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
           const upper = Number(val[3]).toFixed(2);
           const variantName = val[4];
           const isSig = val[5];
-          const borderC = isDark ? '#334155' : '#e2e8f0';
+          const borderC = isDark ? '#27272a' : '#e4e4e7';
 
           return `<div style="font-weight:600;margin-bottom:4px;border-bottom:1px solid ${borderC};padding-bottom:3px;">${variantName}</div>
             <div style="margin:2px 0;">絕對提升: <span style="font-family:monospace;font-weight:bold;color:${isDark ? '#38bdf8' : '#0284c7'};">${center > '0' ? '+' : ''}${center} pp</span></div>
             <div style="margin:2px 0;">95% Newcombe 信賴區間: <span style="font-family:monospace;">[${lower}%, ${upper}%]</span></div>
-            <div style="margin-top:4px;font-size:11px;color:${isSig ? '#10b981' : '#94a3b8'};">
+            <div style="margin-top:4px;font-size:11px;color:${isSig ? '#10b981' : '#a1a1aa'};">
               ${isSig ? '● 統計顯著（未跨越 0 基準線）' : '○ 未達顯著（信賴區間包含 0）'}
             </div>`;
         },
@@ -157,10 +158,10 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
         type: 'value',
         min: Number((-maxAbs).toFixed(2)),
         max: Number(maxAbs.toFixed(2)),
-        axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } },
-        splitLine: { lineStyle: { color: isDark ? '#1e293b' : '#f1f5f9' } },
+        axisLine: { lineStyle: { color: isDark ? '#3f3f46' : '#d4d4d8' } },
+        splitLine: { lineStyle: { color: isDark ? '#27272a' : '#f4f4f5' } },
         axisLabel: {
-          color: isDark ? '#64748b' : '#64748b',
+          color: isDark ? '#71717a' : '#71717a',
           fontSize: 10,
           margin: 10,
           formatter: (v: number) => `${v.toFixed(1)}%`,
@@ -169,9 +170,9 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
       yAxis: {
         type: 'category',
         data: yCategories,
-        axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } },
+        axisLine: { lineStyle: { color: isDark ? '#3f3f46' : '#d4d4d8' } },
         axisLabel: {
-          color: isDark ? '#94a3b8' : '#334155',
+          color: isDark ? '#a1a1aa' : '#52525b',
           fontSize: 11,
           margin: 12,
           width: 120,
@@ -194,7 +195,7 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
             silent: true,
             symbol: 'none',
             lineStyle: {
-              color: isDark ? '#64748b' : '#94a3b8',
+              color: isDark ? '#71717a' : '#a1a1aa',
               type: 'dashed',
               width: 1.5,
             },

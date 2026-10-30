@@ -92,14 +92,15 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
       animation: false,
       tooltip: {
         trigger: 'axis',
-        backgroundColor: isDark ? '#0f172a' : '#ffffff',
-        borderColor: isDark ? '#334155' : '#e2e8f0',
-        textStyle: { color: isDark ? '#e2e8f0' : '#0f172a', fontSize: 12 },
+        backgroundColor: isDark ? '#18181b' : '#ffffff',
+        borderColor: isDark ? '#27272a' : '#e4e4e7',
+        textStyle: { color: isDark ? '#fafafa' : '#09090b', fontSize: 12 },
+        extraCssText: `box-shadow: ${isDark ? '0 10px 15px -3px rgba(0,0,0,0.5)' : '0 10px 15px -3px rgba(0,0,0,0.1)'}; border-radius: 8px;`,
         formatter: (params: any) => {
           if (!Array.isArray(params) || params.length === 0) return '';
           const xIdx = params[0].dataIndex;
           const rateVal = (xData[xIdx] * 100).toFixed(2);
-          const borderC = isDark ? '#334155' : '#e2e8f0';
+          const borderC = isDark ? '#27272a' : '#e4e4e7';
           let str = `<div style="font-weight:600;margin-bottom:4px;border-bottom:1px solid ${borderC};padding-bottom:3px;">轉換率: ${rateVal}%</div>`;
           params.forEach((item: any) => {
             str += `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0;">
@@ -115,7 +116,7 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
         top: 6,
         left: 12,
         right: 48,
-        textStyle: { color: isDark ? '#94a3b8' : '#64748b', fontSize: 11 },
+        textStyle: { color: isDark ? '#a1a1aa' : '#52525b', fontSize: 11 },
         icon: 'circle',
       },
       grid: {
@@ -128,9 +129,9 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
       xAxis: {
         type: 'category',
         data: xData.map((v) => `${(v * 100).toFixed(2)}%`),
-        axisLine: { lineStyle: { color: isDark ? '#334155' : '#cbd5e1' } },
+        axisLine: { lineStyle: { color: isDark ? '#3f3f46' : '#d4d4d8' } },
         axisLabel: {
-          color: isDark ? '#64748b' : '#64748b',
+          color: isDark ? '#71717a' : '#71717a',
           fontSize: 10,
           margin: 10,
           interval: Math.floor(steps / 6),
@@ -146,10 +147,10 @@ export const DistributionEChart: React.FC<DistributionEChartProps> = ({ variants
           saveAsImage: {
             title: '儲存圖表 PNG',
             pixelRatio: 2,
-            backgroundColor: isDark ? '#0f172a' : '#ffffff',
+            backgroundColor: isDark ? '#18181b' : '#ffffff',
           },
         },
-        iconStyle: { borderColor: isDark ? '#64748b' : '#94a3b8' },
+        iconStyle: { borderColor: isDark ? '#71717a' : '#a1a1aa' },
         right: 12,
         top: 6,
       },

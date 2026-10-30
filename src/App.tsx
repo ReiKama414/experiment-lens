@@ -2,81 +2,67 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import type {
   Variant,
   ExperimentSettings,
-  ExperimentRecord,
   ExperimentStatus,
+  ExperimentRecord,
 } from './types/experiment';
-import {
-  runTwoSampleTest,
-  calculateSRM,
-  applyBenjaminiHochberg,
-} from './utils/stats';
-import {
-  runStatisticalVerificationSuite,
-} from './utils/statsVerification';
-import type { VerificationSuiteSummary } from './utils/statsVerification';
-import { parseStateFromUrl } from './utils/urlState';
-import type { ExperimentStateSnapshot } from './utils/urlState';
+import { runTwoSampleTest, applyBenjaminiHochberg, calculateSRM } from './utils/stats';
 import { PRESET_EXPERIMENTS } from './utils/presets';
 import type { PresetExperiment } from './utils/presets';
-import {
-  initializeDatabase,
-  getAllExperiments,
-  saveExperiment,
-} from './db/indexedDB';
+import { parseStateFromUrl } from './utils/urlState';
+import type { ExperimentStateSnapshot } from './utils/urlState';
 import { Header } from './components/Header';
+import { TabNav } from './components/layout/TabNav';
+import type { ActiveWorkbenchTab } from './components/layout/TabNav';
+import { StatusBar } from './components/layout/StatusBar';
 import { VariantTable } from './components/VariantTable';
 import { ResultsOverview } from './components/ResultsOverview';
 import { VisualDistributions } from './components/VisualDistributions';
 import { StatisticalDeepDive } from './components/StatisticalDeepDive';
 import { SampleSizeCalculator } from './components/SampleSizeCalculator';
 import { BusinessValueGuardrails } from './components/BusinessValueGuardrails';
-import { VerificationModal } from './components/VerificationModal';
 import { ShareExportModal } from './components/ShareExportModal';
+import { VerificationModal } from './components/VerificationModal';
 import { ExperimentManagerModal } from './components/ExperimentManagerModal';
-import {
-  BarChart3,
-  Calculator,
-  ShieldAlert,
-  Tag,
-  CheckCircle2,
-} from 'lucide-react';
+import { runStatisticalVerificationSuite } from './utils/statsVerification';
+import { initializeDatabase, saveExperiment, getAllExperiments } from './db/indexedDB';
+import { Tag } from 'lucide-react';
 
 export function App() {
-  const defaultPreset = PRESET_EXPERIMENTS[0];
-
-  const [currentId, setCurrentId] = useState<string>(() => {
-    const urlState = parseStateFromUrl();
-    if (urlState) return `exp-${Date.now()}`;
-    return defaultPreset.id;
-  });
-
-  const [settings, setSettings] = useState<ExperimentSettings>(() => {
-    const urlState = parseStateFromUrl();
-    if (urlState && urlState.settings) {
-      return urlState.settings;
+  // Try initializing state from URL hash if available, else default to first preset
+  const [initialData] = useState(() => {
+    const fromUrl = parseStateFromUrl();
+    if (fromUrl) {
+      return {
+        name: fromUrl.experimentName || 'URL 載入之實驗',
+        metric: fromUrl.metricName || '轉換率',
+        variants: fromUrl.variants,
+        settings: fromUrl.settings,
+      };
     }
-    return defaultPreset.settings;
+    const defaultPreset = PRESET_EXPERIMENTS[0];
+    return {
+      name: defaultPreset.name,
+      metric: defaultPreset.settings.metricName,
+      variants: defaultPreset.variants,
+      settings: defaultPreset.settings,
+    };
   });
 
-  const [variants, setVariants] = useState<Variant[]>(() => {
-    const urlState = parseStateFromUrl();
-    if (urlState && urlState.variants) {
-      return urlState.variants;
-    }
-    return defaultPreset.variants;
-  });
-
-  const [status, setStatus] = useState<ExperimentStatus>('concluded');
-  const [activeTab, setActiveTab] = useState<'analysis' | 'power' | 'business'>('analysis');
+  const [currentId, setCurrentId] = useState<string>(`exp-${Date.now()}`);
+  const [status, setStatus] = useState<ExperimentStatus>('running');
   const [lastSavedTime, setLastSavedTime] = useState<number | undefined>(undefined);
 
+  const [settings, setSettings] = useState<ExperimentSettings>(initialData.settings);
+  const [variants, setVariants] = useState<Variant[]>(initialData.variants);
+  const [activeTab, setActiveTab] = useState<ActiveWorkbenchTab>('analysis');
+
   // Modals state
-  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const [isDatabaseModalOpen, setIsDatabaseModalOpen] = useState(false);
 
-  // Self-verification suite
-  const [verificationSummary, setVerificationSummary] = useState<VerificationSuiteSummary>(() =>
+  // Self-verification summary
+  const [verificationSummary, setVerificationSummary] = useState(() =>
     runStatisticalVerificationSuite()
   );
 
@@ -140,15 +126,15 @@ export function App() {
     };
   }, [currentId, settings, variants, status]);
 
-  // Handle Preset selection
+  // Handle Preset Selection
   const handleSelectPreset = (preset: PresetExperiment) => {
-    setCurrentId(preset.id);
+    setCurrentId(`exp-${Date.now()}`);
     setSettings(preset.settings);
     setVariants(preset.variants);
-    setStatus('concluded');
+    setStatus('running');
   };
 
-  // Handle Load from Record (from DB)
+  // Handle Select from Database
   const handleSelectRecord = (record: ExperimentRecord) => {
     setCurrentId(record.id);
     setSettings(record.settings);
@@ -162,8 +148,8 @@ export function App() {
     const now = Date.now();
     const newId = `exp-${now}`;
     const newSettings: ExperimentSettings = {
-      experimentName: '全新 A/B 測試',
-      metricName: '轉換率',
+      experimentName: '未命名 A/B 測試',
+      metricName: '點擊率 (CTR)',
       confidenceLevel: 0.95,
       hypothesisDirection: 'two-sided',
       useContinuityCorrection: false,
@@ -172,7 +158,7 @@ export function App() {
     const newVariants: Variant[] = [
       {
         id: `var-${now}-1`,
-        name: '對照組 (Control)',
+        name: '對照組 A (Control)',
         visitors: 10000,
         conversions: 500,
         expectedTrafficPercent: 50,
@@ -239,10 +225,12 @@ export function App() {
   const primaryComparison = comparisons[0];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-150">
-      {/* Top Header */}
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col font-sans transition-colors duration-150">
+      {/* 1. Top Header */}
       <Header
+        currentExperimentName={settings.experimentName}
         onSelectPreset={handleSelectPreset}
+        onNewExperiment={handleNewExperiment}
         onOpenShareModal={() => setIsShareModalOpen(true)}
         onOpenVerificationModal={() => setIsVerificationModalOpen(true)}
         onOpenDatabaseModal={() => setIsDatabaseModalOpen(true)}
@@ -251,23 +239,34 @@ export function App() {
         lastSavedTime={lastSavedTime}
       />
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5">
+      {/* 2. Analytical Workbench Tabs (Aligned with insight-canvas TabNav style) */}
+      <TabNav
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        hasSrmAlert={srm.hasMismatch}
+        variantCount={variants.length}
+      />
+
+      {/* 3. Main Container (Expanded to max-w-[1700px] per insight-canvas layout) */}
+      <main className="flex-1 max-w-[1700px] w-full mx-auto p-3 sm:p-4 md:p-6 pb-14 sm:pb-16 min-w-0 space-y-5">
         {/* Experiment Title & Meta Banner */}
-        <div data-testid="app-title-banner" className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+        <div
+          data-testid="app-title-banner"
+          className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs transition-colors"
+        >
           <div data-testid="app-title-info" className="flex-1 space-y-1.5 min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <input
                 type="text"
                 value={settings.experimentName}
                 onChange={(e) => handleUpdateSettings({ experimentName: e.target.value })}
-                className="text-base font-bold text-slate-900 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-blue-500 focus:outline-none transition w-full sm:w-auto"
+                className="text-base sm:text-lg font-bold text-zinc-900 dark:text-zinc-100 bg-transparent border-b border-transparent hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition w-full sm:w-auto font-mono"
                 placeholder="輸入測試實驗名稱..."
               />
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as ExperimentStatus)}
-                className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-[11px] rounded px-2 py-0.5 font-mono text-slate-800 dark:text-slate-300 focus:outline-none"
+                className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-[11px] rounded-md px-2 py-0.5 font-mono text-zinc-800 dark:text-zinc-200 focus:outline-none"
               >
                 <option value="draft">DRAFT (草稿)</option>
                 <option value="running">RUNNING (進行中)</option>
@@ -275,56 +274,17 @@ export function App() {
                 <option value="archived">ARCHIVED (已封存)</option>
               </select>
             </div>
-            <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400">
+            <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
               <Tag className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
               <span>目標指標:</span>
               <input
                 type="text"
                 value={settings.metricName}
                 onChange={(e) => handleUpdateSettings({ metricName: e.target.value })}
-                className="font-medium text-slate-800 dark:text-slate-200 bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-blue-500 focus:outline-none transition text-xs"
+                className="font-medium text-zinc-800 dark:text-zinc-200 bg-transparent border-b border-transparent hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition text-xs font-mono"
                 placeholder="例如：付款轉換率"
               />
             </div>
-          </div>
-
-          {/* Workbench Tabs */}
-          <div data-testid="app-workbench-tabs" className="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold overflow-x-auto max-w-full shrink-0">
-            <button
-              onClick={() => setActiveTab('analysis')}
-              className={`px-3 py-1.5 rounded-md transition flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
-                activeTab === 'analysis'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <BarChart3 className="w-3.5 h-3.5" />
-              <span>A/B 檢定分析</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('power')}
-              className={`px-3 py-1.5 rounded-md transition flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
-                activeTab === 'power'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <Calculator className="w-3.5 h-3.5" />
-              <span>樣本量與檢定力</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('business')}
-              className={`px-3 py-1.5 rounded-md transition flex items-center space-x-1.5 shrink-0 whitespace-nowrap ${
-                activeTab === 'business'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <ShieldAlert className="w-3.5 h-3.5" />
-              <span>商業價值與假設檢驗</span>
-            </button>
           </div>
         </div>
 
@@ -378,39 +338,13 @@ export function App() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer data-testid="app-footer" className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 py-4 mt-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-          <div className="space-y-0.5">
-            <span className="text-slate-800 dark:text-slate-300 font-semibold">
-              Experiment Lens · 專業級 A/B 測試分析工作台
-            </span>
-            <p>
-              雙樣本比例 Z 檢定 · Newcombe Hybrid Score · Wilson 區間 · Pearson χ² SRM · ECharts 視覺化 · IndexedDB 本機儲存
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 text-slate-500 dark:text-slate-400 text-[11px]">
-            <button
-              onClick={() => setIsVerificationModalOpen(true)}
-              className="hover:text-blue-600 dark:hover:text-blue-400 transition underline underline-offset-2 flex items-center gap-1"
-            >
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-              <span>通過 9 項統計數學基準測試</span>
-            </button>
-            <span>·</span>
-            <a
-              href="https://reikama414.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-600 dark:hover:text-blue-400 transition"
-            >
-              ReiKama414
-            </a>
-            <span>·</span>
-            <span>All Rights Reserved</span>
-          </div>
-        </div>
-      </footer>
+      {/* 4. Bottom Status Bar (Insight Canvas Workbench Footer Architecture) */}
+      <StatusBar
+        variants={variants}
+        srm={srm}
+        onOpenVerificationModal={() => setIsVerificationModalOpen(true)}
+        verificationPassed={verificationSummary.failed === 0}
+      />
 
       {/* Verification Modal */}
       <VerificationModal

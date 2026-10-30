@@ -97,7 +97,6 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
     const reader = new FileReader();
     reader.onload = async (event) => {
       const content = event.target?.result as string;
-
       if (filename.endsWith('.csv')) {
         const res = parseCSVToVariants(content);
         if (!res.success || !res.data) {
@@ -163,27 +162,26 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
     };
 
     reader.readAsText(file);
-    // Reset file input value so re-selecting same file triggers change
     e.target.value = '';
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl max-w-4xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-4xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="px-4 sm:px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-950">
-          <div className="flex items-center space-x-2.5">
-            <div className="p-1.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg border border-blue-200 dark:border-blue-500/20 shrink-0">
-              <Database className="w-4 h-4" />
+        <div className="px-4 sm:px-5 py-3.5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-zinc-50 dark:bg-zinc-950">
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-lg border border-zinc-200 dark:border-zinc-700 shrink-0">
+              <Database className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 font-mono">
                 <span>本機實驗庫 (IndexedDB 儲存庫)</span>
-                <span className="text-[11px] bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono px-2 py-0.5 rounded border border-slate-300 dark:border-slate-700">
+                <span className="text-[11px] bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-mono px-2 py-0.5 rounded-md border border-zinc-300 dark:border-zinc-700">
                   {experiments.length} 個實驗
                 </span>
               </h3>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
                 所有實驗數據均安全持久化保存在瀏覽器 IndexedDB 中，離線可用且完全保障隱私。
               </p>
             </div>
@@ -191,30 +189,30 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition"
+            className="p-1.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Action Controls Ribbon */}
-        <div className="px-4 sm:px-5 py-3 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs">
-          <div className="flex items-center space-x-2 flex-1 max-w-full sm:max-w-md">
+        <div className="px-4 sm:px-5 py-3 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 flex-1 max-w-full sm:max-w-md">
             <div className="relative w-full">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-400" />
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-zinc-400" />
               <input
                 type="text"
                 placeholder="搜尋實驗名稱、指標或標籤..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md pl-8 pr-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500"
               />
             </div>
 
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none shrink-0"
+              className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none shrink-0"
             >
               <option value="all">所有狀態</option>
               <option value="draft">草稿 (Draft)</option>
@@ -230,14 +228,14 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
                 onNewExperiment();
                 onClose();
               }}
-              className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-md font-medium transition flex items-center space-x-1"
+              className="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 rounded-lg font-medium transition flex items-center gap-1 shadow-2xs"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>建立新實驗</span>
             </button>
 
-            <label className="px-2.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded-md font-medium transition flex items-center space-x-1 cursor-pointer">
-              <Upload className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+            <label className="px-2.5 py-1.5 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 rounded-lg font-medium transition flex items-center gap-1 cursor-pointer shadow-2xs">
+              <Upload className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
               <span>匯入 (CSV/JSON)</span>
               <input
                 type="file"
@@ -249,10 +247,10 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
 
             <button
               onClick={handleExportAll}
-              className="px-2.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded-md font-medium transition flex items-center space-x-1"
+              className="px-2.5 py-1.5 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 rounded-lg font-medium transition flex items-center gap-1 shadow-2xs"
               title="備份所有實驗為 JSON"
             >
-              <Download className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+              <Download className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
               <span>全庫備份</span>
             </button>
           </div>
@@ -261,7 +259,7 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
         {/* Import status alert */}
         {importStatus && (
           <div
-            className={`px-4 sm:px-5 py-2 text-xs flex items-center space-x-2 ${
+            className={`px-4 sm:px-5 py-2 text-xs flex items-center gap-2 ${
               importStatus.isError
                 ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-b border-rose-200 dark:border-rose-800'
                 : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-b border-emerald-200 dark:border-emerald-800'
@@ -279,8 +277,8 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
         {/* Experiment Records List */}
         <div className="p-4 sm:p-5 overflow-y-auto space-y-2 flex-1">
           {experiments.length === 0 ? (
-            <div className="text-center py-12 text-slate-400 dark:text-slate-500 text-xs space-y-2">
-              <FolderOpen className="w-8 h-8 mx-auto text-slate-400 dark:text-slate-600" />
+            <div className="text-center py-12 text-zinc-400 dark:text-zinc-500 text-xs space-y-2">
+              <FolderOpen className="w-8 h-8 mx-auto text-zinc-400 dark:text-zinc-600" />
               <p>無符合條件的實驗紀錄。</p>
             </div>
           ) : (
@@ -300,39 +298,39 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
                   : exp.status === 'running'
                   ? 'bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-400 border-blue-300 dark:border-blue-800'
                   : exp.status === 'archived'
-                  ? 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-400 border-slate-300 dark:border-slate-700'
+                  ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400 border-zinc-300 dark:border-zinc-700'
                   : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-400 border-amber-300 dark:border-amber-800';
 
               return (
                 <div
                   key={exp.id}
-                  className={`p-3 rounded-lg border flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition ${
+                  className={`p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition ${
                     isActive
-                      ? 'bg-blue-50/60 dark:bg-slate-800/80 border-blue-400 dark:border-blue-500/50'
-                      : 'bg-slate-50 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800/40'
+                      ? 'bg-zinc-100/70 dark:bg-zinc-800/80 border-zinc-400 dark:border-zinc-600'
+                      : 'bg-zinc-50 dark:bg-zinc-950/60 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/40'
                   }`}
                 >
                   <div className="space-y-1 flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-semibold text-slate-900 dark:text-white text-xs truncate max-w-xs">{exp.name}</span>
-                      <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono border ${statusColor}`}>
+                      <span className="font-semibold text-zinc-900 dark:text-zinc-100 text-xs truncate max-w-xs">{exp.name}</span>
+                      <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-mono border ${statusColor}`}>
                         {exp.status.toUpperCase()}
                       </span>
                       {isActive && (
-                        <span className="text-[10px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-mono">
+                        <span className="text-[10px] bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 px-1.5 py-0.2 rounded font-mono">
                           目前開啟中
                         </span>
                       )}
                     </div>
 
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400 flex flex-wrap items-center gap-x-3 gap-y-1">
-                      <span>指標: <strong className="text-slate-800 dark:text-slate-300">{exp.metricName}</strong></span>
-                      <span>組別: <strong className="text-slate-800 dark:text-slate-300">{exp.variants.length} 組</strong></span>
+                    <div className="text-[11px] text-zinc-500 dark:text-zinc-400 flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <span>指標: <strong className="text-zinc-800 dark:text-zinc-300 font-mono">{exp.metricName}</strong></span>
+                      <span>組別: <strong className="text-zinc-800 dark:text-zinc-300 font-mono">{exp.variants.length} 組</strong></span>
                       <span>最後更新: <span className="font-mono">{dateStr}</span></span>
                       {exp.tags && exp.tags.length > 0 && (
                         <div className="flex items-center gap-1">
                           {exp.tags.map((t) => (
-                            <span key={t} className="bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-1.5 rounded text-[10px]">
+                            <span key={t} className="bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-1.5 rounded text-[10px] font-mono">
                               #{t}
                             </span>
                           ))}
@@ -341,20 +339,20 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-1.5 shrink-0 sm:self-center">
+                  <div className="flex items-center gap-1.5 shrink-0 sm:self-center">
                     <button
                       onClick={() => {
                         onSelectExperiment(exp);
                         onClose();
                       }}
-                      className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium transition"
+                      className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 text-xs font-medium transition shadow-2xs"
                     >
                       開啟載入
                     </button>
 
                     <button
                       onClick={() => handleDuplicate(exp.id)}
-                      className="p-1.5 rounded bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition"
+                      className="p-1.5 rounded-lg bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 transition shadow-2xs"
                       title="建立副本"
                     >
                       <Copy className="w-3.5 h-3.5" />
@@ -362,7 +360,7 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
 
                     <button
                       onClick={() => handleDelete(exp.id, exp.name)}
-                      className="p-1.5 rounded bg-slate-200 dark:bg-slate-800 hover:bg-rose-100 dark:hover:bg-rose-950 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition"
+                      className="p-1.5 rounded-lg bg-white dark:bg-zinc-800 hover:bg-rose-50 dark:hover:bg-rose-950 text-zinc-500 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 border border-zinc-200 dark:border-zinc-700 transition shadow-2xs"
                       title="刪除"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -375,11 +373,11 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-4 sm:px-5 py-2.5 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+        <div className="px-4 sm:px-5 py-2.5 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
           <span>支援將任何現有 A/B 數據匯入或將歷史實驗完整備份為標準 JSON / CSV。</span>
           <button
             onClick={onClose}
-            className="px-3 py-1 rounded bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition"
+            className="px-3 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 transition text-xs font-medium shadow-2xs"
           >
             關閉
           </button>
