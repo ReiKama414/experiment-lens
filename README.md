@@ -5,7 +5,7 @@
 > **Pure Frontend A/B Testing & Statistical Decision Studio**, 100% in-browser sandbox computation with zero server data transfer.
 
 <p align="center">
-  <img src="assets/screenshots/workbench-light.png" alt="Experiment Lens Studio Preview" width="880" />
+  <img src="docs/preview.png" alt="Experiment Lens Studio Preview" width="880" />
 </p>
 
 <p align="center">

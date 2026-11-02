@@ -5,7 +5,7 @@
 > **純前端 A/B 測試分析與統計決策工作台**，100% 瀏覽器本地沙盒運算，零伺服器資料傳輸
 
 <p align="center">
-  <img src="assets/screenshots/workbench-light.png" alt="Experiment Lens 工作台預覽" width="880" />
+  <img src="docs/preview.png" alt="Experiment Lens 工作台預覽" width="880" />
 </p>
 
 <p align="center">
