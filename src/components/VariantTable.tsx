@@ -55,9 +55,10 @@ export const VariantTable: React.FC<VariantTableProps> = ({
 
   const handleRemoveVariant = (id: string) => {
     if (variants.length <= 2) return;
-    const remaining = variants.filter((v) => v.id !== id);
+    let remaining = variants.filter((v) => v.id !== id);
     if (!remaining.some((v) => v.isControl)) {
-      remaining[0].isControl = true;
+      // Do not mutate existing state objects; promote the first remaining variant immutably
+      remaining = remaining.map((v, i) => (i === 0 ? { ...v, isControl: true } : v));
     }
     const defaultSplit = Math.round((100 / remaining.length) * 10) / 10;
     const updated = remaining.map((v) => ({
@@ -154,6 +155,8 @@ export const VariantTable: React.FC<VariantTableProps> = ({
                           : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300'
                       }`}
                       title={v.isControl ? '目前為對照基準組 (Control)' : '設為對照組'}
+                      aria-label={v.isControl ? `${v.name} 為對照基準組` : `將 ${v.name} 設為對照組`}
+                      aria-pressed={v.isControl}
                     >
                       <Crown className="w-4 h-4" />
                     </button>
@@ -168,6 +171,7 @@ export const VariantTable: React.FC<VariantTableProps> = ({
                         onChange={(e) => handleUpdate(v.id, 'name', e.target.value)}
                         className="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 text-zinc-900 dark:text-zinc-100 font-medium focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500 text-xs sm:text-sm"
                         placeholder="例如：對照組 A"
+                        aria-label="組別名稱"
                       />
                       {v.isControl && (
                         <span className="text-[10px] bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-200 dark:border-amber-800 px-1.5 py-0.5 rounded-md font-mono shrink-0">
@@ -189,6 +193,7 @@ export const VariantTable: React.FC<VariantTableProps> = ({
                       }
                       className="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 text-zinc-900 dark:text-zinc-100 font-mono focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500 text-xs sm:text-sm text-right"
                       placeholder="10000"
+                      aria-label={`${v.name} 訪客數`}
                     />
                   </td>
 
@@ -213,6 +218,8 @@ export const VariantTable: React.FC<VariantTableProps> = ({
                             : 'border-zinc-200 dark:border-zinc-700 focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500'
                         }`}
                         placeholder="500"
+                        aria-label={`${v.name} 轉換數`}
+                        aria-invalid={hasError}
                       />
                       {hasError && (
                         <div
@@ -266,8 +273,9 @@ export const VariantTable: React.FC<VariantTableProps> = ({
                         }
                         className="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 text-zinc-900 dark:text-zinc-100 font-mono focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500 text-xs sm:text-sm text-right pr-6"
                         placeholder="50"
+                        aria-label={`${v.name} 預期分流百分比`}
                       />
-                      <span className="absolute right-2.5 top-2 text-xs text-zinc-400 font-mono">
+                      <span className="pointer-events-none absolute right-2.5 top-2 text-xs text-zinc-400 font-mono">
                         %
                       </span>
                     </div>
@@ -281,6 +289,7 @@ export const VariantTable: React.FC<VariantTableProps> = ({
                       disabled={variants.length <= 2}
                       className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:text-rose-400 dark:hover:bg-rose-950/40 disabled:opacity-30 disabled:hover:bg-transparent transition"
                       title={variants.length <= 2 ? '至少保留兩組變體進行 A/B 比較' : '刪除此變體'}
+                      aria-label={`刪除 ${v.name}`}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

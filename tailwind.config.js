@@ -7,6 +7,17 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      // Tailwind v4-style utilities used throughout the components but missing in v3
+      boxShadow: {
+        '2xs': '0 1px rgb(0 0 0 / 0.05)',
+        xs: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+      },
+      backdropBlur: {
+        xs: '2px',
+      },
+      spacing: {
+        '4.5': '1.125rem',
+      },
       colors: {
         brand: {
           50: '#f0fdf4',

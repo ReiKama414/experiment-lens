@@ -72,7 +72,7 @@ export const TabNav: React.FC<TabNavProps> = ({
               <span>{tab.label}</span>
               {tab.badge && (
                 <span
-                  className={`px-1.5 py-0.2 text-[10px] font-semibold rounded-full border font-mono flex items-center gap-1 ${
+                  className={`px-1.5 py-px text-[10px] font-semibold rounded-full border font-mono flex items-center gap-1 ${
                     tab.badgeColor === 'amber'
                       ? 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800 animate-pulse'
                       : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700'

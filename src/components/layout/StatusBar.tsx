@@ -13,6 +13,8 @@ interface StatusBarProps {
   srm: SRMResult;
   onOpenVerificationModal: () => void;
   verificationPassed: boolean;
+  verificationTotal?: number;
+  verificationPassedCount?: number;
 }
 
 export const StatusBar: React.FC<StatusBarProps> = ({
@@ -20,6 +22,8 @@ export const StatusBar: React.FC<StatusBarProps> = ({
   srm,
   onOpenVerificationModal,
   verificationPassed,
+  verificationTotal,
+  verificationPassedCount,
 }) => {
   const totalVisitors = variants.reduce((sum, v) => sum + (v.visitors || 0), 0);
   const totalConversions = variants.reduce((sum, v) => sum + (v.conversions || 0), 0);
@@ -82,7 +86,15 @@ export const StatusBar: React.FC<StatusBarProps> = ({
                 verificationPassed ? 'text-emerald-400' : 'text-rose-400'
               }`}
             />
-            <span className="underline underline-offset-2 truncate">通過 9 項統計數學基準測試</span>
+            <span className="underline underline-offset-2 truncate">
+              {verificationTotal === undefined
+                ? verificationPassed
+                  ? '通過統計數學基準測試'
+                  : '統計數學基準測試未通過'
+                : verificationPassed
+                ? `通過 ${verificationTotal} 項統計數學基準測試`
+                : `${verificationPassedCount ?? 0}/${verificationTotal} 項基準測試通過（有失敗）`}
+            </span>
           </button>
 
           <span className="text-zinc-700 shrink-0">·</span>

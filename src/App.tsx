@@ -24,7 +24,12 @@ import { ShareExportModal } from './components/ShareExportModal';
 import { VerificationModal } from './components/VerificationModal';
 import { ExperimentManagerModal } from './components/ExperimentManagerModal';
 import { runStatisticalVerificationSuite } from './utils/statsVerification';
-import { initializeDatabase, saveExperiment, getAllExperiments } from './db/indexedDB';
+import {
+  initializeDatabase,
+  saveExperiment,
+  getAllExperiments,
+  getExperimentById,
+} from './db/indexedDB';
 import { Tag } from 'lucide-react';
 
 export function App() {
@@ -104,15 +109,20 @@ export function App() {
 
     saveTimeoutRef.current = setTimeout(async () => {
       try {
+        // Preserve createdAt / tags / description of an already-stored record
+        // so auto-save does not wipe metadata edited elsewhere (e.g. CSV import tags).
+        const existing = await getExperimentById(currentId);
         const record: ExperimentRecord = {
           id: currentId,
           name: settings.experimentName,
           metricName: settings.metricName,
           status,
-          createdAt: Date.now(),
+          createdAt: existing?.createdAt ?? Date.now(),
           updatedAt: Date.now(),
           variants,
           settings,
+          description: existing?.description,
+          tags: existing?.tags,
         };
         await saveExperiment(record);
         setLastSavedTime(Date.now());
@@ -262,10 +272,12 @@ export function App() {
                 onChange={(e) => handleUpdateSettings({ experimentName: e.target.value })}
                 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-zinc-100 bg-transparent border-b border-transparent hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition w-full sm:w-auto font-mono"
                 placeholder="輸入測試實驗名稱..."
+                aria-label="實驗名稱"
               />
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as ExperimentStatus)}
+                aria-label="實驗狀態"
                 className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-[11px] rounded-md px-2 py-0.5 font-mono text-zinc-800 dark:text-zinc-200 focus:outline-none"
               >
                 <option value="draft">DRAFT (草稿)</option>
@@ -283,6 +295,7 @@ export function App() {
                 onChange={(e) => handleUpdateSettings({ metricName: e.target.value })}
                 className="font-medium text-zinc-800 dark:text-zinc-200 bg-transparent border-b border-transparent hover:border-zinc-300 dark:hover:border-zinc-700 focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition text-xs font-mono"
                 placeholder="例如：付款轉換率"
+                aria-label="目標指標名稱"
               />
             </div>
           </div>

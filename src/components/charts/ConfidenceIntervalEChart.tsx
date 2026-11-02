@@ -5,10 +5,12 @@ import { useTheme } from '../../context/ThemeContext';
 
 interface ConfidenceIntervalEChartProps {
   comparisons: ComparisonResult[];
+  confidenceLevel?: number;
 }
 
 export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> = ({
   comparisons,
+  confidenceLevel = 0.95,
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
@@ -23,6 +25,7 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
     }
 
     const isDark = resolvedTheme === 'dark';
+    const confidencePct = (confidenceLevel * 100).toFixed(0);
     chartInstance.current = echarts.init(chartRef.current, isDark ? 'dark' : undefined);
     const chart = chartInstance.current;
 
@@ -140,8 +143,8 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
           const borderC = isDark ? '#27272a' : '#e4e4e7';
 
           return `<div style="font-weight:600;margin-bottom:4px;border-bottom:1px solid ${borderC};padding-bottom:3px;">${variantName}</div>
-            <div style="margin:2px 0;">絕對提升: <span style="font-family:monospace;font-weight:bold;color:${isDark ? '#38bdf8' : '#0284c7'};">${center > '0' ? '+' : ''}${center} pp</span></div>
-            <div style="margin:2px 0;">95% Newcombe 信賴區間: <span style="font-family:monospace;">[${lower}%, ${upper}%]</span></div>
+            <div style="margin:2px 0;">絕對提升: <span style="font-family:monospace;font-weight:bold;color:${isDark ? '#38bdf8' : '#0284c7'};">${Number(center) > 0 ? '+' : ''}${center} pp</span></div>
+            <div style="margin:2px 0;">${confidencePct}% Newcombe 信賴區間: <span style="font-family:monospace;">[${lower}%, ${upper}%]</span></div>
             <div style="margin-top:4px;font-size:11px;color:${isSig ? '#10b981' : '#a1a1aa'};">
               ${isSig ? '● 統計顯著（未跨越 0 基準線）' : '○ 未達顯著（信賴區間包含 0）'}
             </div>`;
@@ -215,7 +218,7 @@ export const ConfidenceIntervalEChart: React.FC<ConfidenceIntervalEChartProps> =
     return () => {
       resizeObserver.disconnect();
     };
-  }, [comparisons, resolvedTheme]);
+  }, [comparisons, resolvedTheme, confidenceLevel]);
 
   useEffect(() => {
     return () => {

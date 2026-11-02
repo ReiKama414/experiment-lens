@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { VerificationSuiteSummary } from '../utils/statsVerification';
+import { useEscapeKey } from '../hooks/useEscapeKey';
 import {
   CheckCircle2,
   XCircle,
@@ -22,8 +23,12 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
   onRefresh,
 }) => {
   const [filterCategory, setFilterCategory] = useState<string>('all');
+  useEscapeKey(isOpen, onClose);
 
   if (!isOpen) return null;
+
+  const allPassed = summary.failed === 0;
+  const passRate = summary.total > 0 ? Math.round((summary.passed / summary.total) * 100) : 0;
 
   const categories = [
     'all',
@@ -40,8 +45,17 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
       : summary.results.filter((r) => r.category === filterCategory);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-3xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="統計數學運算基準測試"
+        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-3xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-zinc-50 dark:bg-zinc-950/60">
           <div className="flex items-center gap-3">
@@ -51,7 +65,13 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
             <div>
               <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-zinc-100 flex flex-wrap items-center gap-2 font-mono">
                 <span>統計數學運算基準測試 (Calculation Verification)</span>
-                <span className="text-xs bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-mono px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
+                <span
+                  className={`text-xs font-mono px-2 py-0.5 rounded-md border ${
+                    allPassed
+                      ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+                      : 'bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-800'
+                  }`}
+                >
                   {summary.passed}/{summary.total} 通過
                 </span>
               </h3>
@@ -66,11 +86,13 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
               onClick={onRefresh}
               className="p-2 text-zinc-400 hover:text-zinc-700 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition"
               title="重新執行計算測試"
+              aria-label="Re-run tests"
             >
               <RotateCw className="w-4 h-4" />
             </button>
             <button
               onClick={onClose}
+              aria-label="Close dialog"
               className="p-2 text-zinc-400 hover:text-zinc-700 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition"
             >
               <X className="w-5 h-5" />
@@ -82,7 +104,16 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
         <div className="px-4 sm:px-6 py-2.5 sm:py-3 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
           <div className="flex flex-wrap items-center gap-2 sm:gap-4">
             <span className="text-zinc-700 dark:text-zinc-300">
-              測試狀態: <strong className="text-emerald-600 dark:text-emerald-400 font-bold">100% PASS</strong>
+              測試狀態:{' '}
+              <strong
+                className={`font-bold ${
+                  allPassed
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : 'text-rose-600 dark:text-rose-400'
+                }`}
+              >
+                {allPassed ? '100% PASS' : `${passRate}% PASS · ${summary.failed} FAIL`}
+              </strong>
             </span>
             <span className="text-zinc-300 dark:text-zinc-700">|</span>
             <span className="text-zinc-700 dark:text-zinc-300">
@@ -122,7 +153,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-zinc-900 dark:text-zinc-100 text-sm font-mono">{test.name}</span>
-                  <span className="text-[10px] bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400 font-mono px-1.5 py-0.2 rounded-md">
+                  <span className="text-[10px] bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400 font-mono px-1.5 py-px rounded-md">
                     {test.category}
                   </span>
                 </div>

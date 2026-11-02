@@ -15,6 +15,7 @@ import {
 } from '../utils/urlState';
 import type { ExperimentStateSnapshot } from '../utils/urlState';
 import { downloadFile, parseJSONToExperiment } from '../utils/fileIO';
+import { useEscapeKey } from '../hooks/useEscapeKey';
 import {
   Share2,
   Copy,
@@ -53,6 +54,7 @@ export const ShareExportModal: React.FC<ShareExportModalProps> = ({
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedMarkdown, setCopiedMarkdown] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
+  useEscapeKey(isOpen, onClose);
 
   if (!isOpen) return null;
 
@@ -147,8 +149,17 @@ export const ShareExportModal: React.FC<ShareExportModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-2xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="匯出報告與重現分享設定"
+        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-2xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="px-4 sm:px-5 py-3.5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-zinc-50 dark:bg-zinc-950">
           <div className="flex items-center gap-2.5">
@@ -165,6 +176,7 @@ export const ShareExportModal: React.FC<ShareExportModalProps> = ({
 
           <button
             onClick={onClose}
+            aria-label="Close dialog"
             className="p-1.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition"
           >
             <X className="w-4 h-4" />

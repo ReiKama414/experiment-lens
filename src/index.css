@@ -69,6 +69,32 @@
   background: #52525b;
 }
 
+/* Hide scrollbars on horizontally scrollable tab bars (used as `no-scrollbar`) */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Visible keyboard focus for interactive elements (inputs keep their own ring styles) */
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible,
+[role='button']:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.dark button:focus-visible,
+.dark a:focus-visible,
+.dark summary:focus-visible,
+.dark [role='button']:focus-visible {
+  outline-color: #60a5fa;
+}
+
 /* Table dense helper */
 .table-dense th,
 .table-dense td {

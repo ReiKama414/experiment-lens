@@ -131,7 +131,7 @@ export const StatisticalDeepDive: React.FC<StatisticalDeepDiveProps> = ({
                       <thead>
                         <tr className="text-zinc-500 dark:text-zinc-400 border-b border-zinc-200 dark:border-zinc-800 font-mono">
                           <th className="py-1.5 px-2">方法</th>
-                          <th className="py-1.5 px-2">95% 信賴區間</th>
+                          <th className="py-1.5 px-2">{(settings.confidenceLevel * 100).toFixed(0)}% 信賴區間</th>
                           <th className="py-1.5 px-2">方法特性說明</th>
                         </tr>
                       </thead>
@@ -148,7 +148,7 @@ export const StatisticalDeepDive: React.FC<StatisticalDeepDiveProps> = ({
                             {(comp.absoluteLiftNewcombeCI.upper * 100).toFixed(3)}%]
                           </td>
                           <td className="py-2 px-2 text-zinc-500 dark:text-zinc-400 font-sans text-[11px]">
-                            結合雙邊獨立 Wilson Score 區間，樣本極小或轉換率極端時皆能嚴格保持 95% 涵蓋率，不發生簡併。
+                            結合雙邊獨立 Wilson Score 區間，樣本極小或轉換率極端時皆能嚴格保持名目涵蓋率，不發生簡併。
                           </td>
                         </tr>
                         <tr>

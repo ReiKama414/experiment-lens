@@ -9,6 +9,7 @@ import {
   saveExperiment,
 } from '../db/indexedDB';
 import { parseCSVToVariants, parseJSONToExperiment, downloadFile } from '../utils/fileIO';
+import { useEscapeKey } from '../hooks/useEscapeKey';
 import {
   Database,
   Plus,
@@ -58,6 +59,8 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
       setImportStatus(null);
     }
   }, [isOpen, searchQuery, statusFilter]);
+
+  useEscapeKey(isOpen, onClose);
 
   if (!isOpen) return null;
 
@@ -166,8 +169,17 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-4xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="本機實驗庫"
+        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-4xl w-full max-h-[88vh] flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="px-4 sm:px-5 py-3.5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-zinc-50 dark:bg-zinc-950">
           <div className="flex items-center gap-2.5">
@@ -189,6 +201,7 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
 
           <button
             onClick={onClose}
+            aria-label="Close dialog"
             className="p-1.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition"
           >
             <X className="w-4 h-4" />
@@ -203,6 +216,7 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
               <input
                 type="text"
                 placeholder="搜尋實驗名稱、指標或標籤..."
+                aria-label="搜尋實驗"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-500"
@@ -212,6 +226,7 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
+              aria-label="依狀態篩選"
               className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none shrink-0"
             >
               <option value="all">所有狀態</option>
@@ -313,11 +328,11 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
                   <div className="space-y-1 flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-semibold text-zinc-900 dark:text-zinc-100 text-xs truncate max-w-xs">{exp.name}</span>
-                      <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-mono border ${statusColor}`}>
+                      <span className={`text-[10px] px-1.5 py-px rounded-md font-mono border ${statusColor}`}>
                         {exp.status.toUpperCase()}
                       </span>
                       {isActive && (
-                        <span className="text-[10px] bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 px-1.5 py-0.2 rounded font-mono">
+                        <span className="text-[10px] bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 px-1.5 py-px rounded font-mono">
                           目前開啟中
                         </span>
                       )}
@@ -373,8 +388,8 @@ export const ExperimentManagerModal: React.FC<ExperimentManagerModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-4 sm:px-5 py-2.5 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
-          <span>支援將任何現有 A/B 數據匯入或將歷史實驗完整備份為標準 JSON / CSV。</span>
+        <div className="px-4 sm:px-5 py-2.5 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+          <span className="min-w-0">支援將任何現有 A/B 數據匯入或將歷史實驗完整備份為標準 JSON / CSV。</span>
           <button
             onClick={onClose}
             className="px-3 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 transition text-xs font-medium shadow-2xs"

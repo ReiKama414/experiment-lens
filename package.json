@@ -2,6 +2,8 @@
   "name": "experiment-lens",
   "private": true,
   "version": "0.0.0",
+  "description": "Pure-frontend A/B testing and statistical decision studio with in-browser hypothesis tests and confidence intervals",
+  "homepage": "https://reikama414.github.io/experiment-lens/",
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {

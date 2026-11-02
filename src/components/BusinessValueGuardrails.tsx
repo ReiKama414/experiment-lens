@@ -109,7 +109,7 @@ export const BusinessValueGuardrails: React.FC<BusinessValueGuardrailsProps> = (
             </div>
 
             <div className="bg-zinc-50 dark:bg-zinc-950/60 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-1">
-              <label className="text-zinc-600 dark:text-zinc-400 block font-medium">平均客單價 (AOV, \$)</label>
+              <label className="text-zinc-600 dark:text-zinc-400 block font-medium">平均客單價 (AOV, $)</label>
               <input
                 type="number"
                 min={1}
@@ -138,7 +138,7 @@ export const BusinessValueGuardrails: React.FC<BusinessValueGuardrailsProps> = (
             </div>
 
             <div className="bg-zinc-50 dark:bg-zinc-950/60 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-1">
-              <label className="text-zinc-600 dark:text-zinc-400 block font-medium">工程與維護成本 (\$)</label>
+              <label className="text-zinc-600 dark:text-zinc-400 block font-medium">工程與維護成本 ($)</label>
               <input
                 type="number"
                 min={0}
@@ -172,11 +172,11 @@ export const BusinessValueGuardrails: React.FC<BusinessValueGuardrailsProps> = (
                   impact.monthlyAdditionalGrossProfit > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-zinc-700 dark:text-zinc-300'
                 }`}
               >
-                {impact.monthlyAdditionalGrossProfit > 0 ? '+\$' : '\$'}
+                {impact.monthlyAdditionalGrossProfit > 0 ? '+$' : '$'}
                 {impact.monthlyAdditionalGrossProfit.toLocaleString()}
               </div>
               <span className="text-[10px] text-zinc-500 block font-mono">
-                額外營收 \${impact.monthlyAdditionalRevenue.toLocaleString()}
+                額外營收 ${impact.monthlyAdditionalRevenue.toLocaleString()}
               </span>
             </div>
 

@@ -133,7 +133,7 @@ export const ResultsOverview: React.FC<ResultsOverviewProps> = ({
                   ? '重大技術警告：檢測到樣本比例失衡 (Sample Ratio Mismatch, SRM)'
                   : '注意：檢測到中度樣本比例偏差 (SRM Warning)'}
               </span>
-              <span className="font-mono text-[10px] px-1.5 py-0.2 rounded bg-black/10 dark:bg-black/50 border border-black/10 dark:border-white/10 shrink-0">
+              <span className="font-mono text-[10px] px-1.5 py-px rounded bg-black/10 dark:bg-black/50 border border-black/10 dark:border-white/10 shrink-0">
                 χ² = {srm.chiSquare.toFixed(2)}, p ={' '}
                 {srm.pValue < 0.0001 ? '< 0.0001' : srm.pValue.toFixed(4)}
               </span>

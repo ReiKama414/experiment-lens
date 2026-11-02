@@ -7,12 +7,15 @@ import { Activity, BarChart2, Info } from 'lucide-react';
 interface VisualDistributionsProps {
   variants: Variant[];
   comparisons: ComparisonResult[];
+  confidenceLevel?: number;
 }
 
 export const VisualDistributions: React.FC<VisualDistributionsProps> = ({
   variants,
   comparisons,
+  confidenceLevel = 0.95,
 }) => {
+  const confidencePct = (confidenceLevel * 100).toFixed(0);
   const validVariants = variants.filter((v) => v.visitors > 0);
 
   return (
@@ -104,7 +107,7 @@ export const VisualDistributions: React.FC<VisualDistributionsProps> = ({
         >
           <h2 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 min-w-0">
             <BarChart2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-            <span className="truncate">絕對提升 95% Newcombe 信賴區間範圍 (Forest Plot)</span>
+            <span className="truncate">絕對提升 {confidencePct}% Newcombe 信賴區間範圍 (Forest Plot)</span>
           </h2>
           <span className="text-[10px] font-mono font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-2 py-0.5 rounded-md border border-zinc-200 dark:border-zinc-700 shrink-0 self-start sm:self-auto">
             vs. 0 基準線
@@ -114,7 +117,7 @@ export const VisualDistributions: React.FC<VisualDistributionsProps> = ({
         {/* 2. Description */}
         <div data-testid="ci-chart-description" className="mt-2.5 min-w-0">
           <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-            呈顯各實驗組相對於對照基準組之絕對提升率（Δp = pB - pA）的 95% Newcombe 混合評分信賴區間。當整條區間未跨越垂直 0 基準線時，代表達到統計顯著。
+            呈顯各實驗組相對於對照基準組之絕對提升率（Δp = pB - pA）的 {confidencePct}% Newcombe 混合評分信賴區間。當整條區間未跨越垂直 0 基準線時，代表達到統計顯著。
           </p>
         </div>
 
@@ -156,7 +159,7 @@ export const VisualDistributions: React.FC<VisualDistributionsProps> = ({
 
         {/* 4. Chart Area */}
         <div data-testid="ci-chart-plot" className="mt-2.5 flex-1 min-w-0 w-full">
-          <ConfidenceIntervalEChart comparisons={comparisons} />
+          <ConfidenceIntervalEChart comparisons={comparisons} confidenceLevel={confidenceLevel} />
         </div>
 
         {/* 5. Legend / Footer */}
