@@ -262,7 +262,7 @@ export function App() {
         {/* Experiment Title & Meta Banner */}
         <div
           data-testid="app-title-banner"
-          className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs transition-colors"
+          className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-end justify-between gap-4 shadow-xs transition-colors"
         >
           <div data-testid="app-title-info" className="flex-1 space-y-1.5 min-w-0">
             <div className="flex flex-wrap items-center gap-2">

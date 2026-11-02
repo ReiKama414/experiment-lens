@@ -41,9 +41,9 @@ export const ChartCard: React.FC<ChartCardProps> = ({
       {/* 1. Header & Actions (Normal Document Flow) */}
       <div
         data-testid={testIds?.header}
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-zinc-100 dark:border-zinc-800/80 min-w-0"
+        className="card-section-head border-b border-zinc-100 dark:border-zinc-800/80 min-w-0"
       >
-        <div className="min-w-0">
+        <div className="min-w-0 pr-1">
           <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">
             {title}
           </h3>
@@ -58,7 +58,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({
         </div>
 
         {/* Header Actions & Export Button (Normal Flex Flow - No Absolute Overlay) */}
-        <div className="flex items-center gap-2 self-start sm:self-auto shrink-0 flex-wrap">
+        <div className="flex items-center gap-2 shrink-0 flex-wrap pl-0.5">
           {headerActions}
           {onExportPNG && (
             <button
